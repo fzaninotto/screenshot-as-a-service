@@ -4,6 +4,7 @@
   , "private": true
   , "dependencies": {
       "jade": "*"
+    , "palette": "*"
     , "redis": "0.7.x"
   }
 }
