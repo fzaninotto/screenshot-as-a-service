@@ -35,12 +35,13 @@ app.get('/stats', function(req, res){
 app.get('/:url(*)', ratelimit(60, 10), function(req, res, next){
   var url = utils.url(req.params.url);
   if (!url) return res.send(400);
+
   var id = utils.md5(url);
 
   var options = {
       path: join(dir, id + '.png')
-    , viewportWidth: 800
-    , viewportHeight: 600
+    , viewportWidth: req.query.width || 800
+    , viewportHeight: req.query.height || 600
   };
 
   console.log('screenshot - rasterizing %s %dx%d'
