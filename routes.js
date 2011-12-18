@@ -36,13 +36,19 @@ app.get('/:url(*)', ratelimit(60, 10), function(req, res, next){
   var url = utils.url(req.params.url);
   if (!url) return res.send(400);
   var id = utils.md5(url);
-  var path = join(dir, id + '.png');
+
+  var options = {
+      path: join(dir, id + '.png')
+    , viewportWidth: 800
+    , viewportHeight: 600
+  };
+
   console.log('screenshot - rasterizing %s', url);
-  rasterize(url, path, function(err){
+  rasterize(url, options, function(err){
     if (err) return next(err);
     console.log('screenshot - rasterized %s', url);
-    app.emit('screenshot', url, path, id);
-    res.sendfile(path);
+    app.emit('screenshot', url, options.path, id);
+    res.sendfile(options.path);
   });
 });
 
