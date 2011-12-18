@@ -17,6 +17,17 @@ app.get('/', function(req, res, next){
   res.render('index', { title: 'Express' });
 });
 
+/**
+ * GET stats.
+ */
+
+app.get('/stats', function(req, res){
+  db.hgetall('screenshot:stats', function(err, obj){
+    if (err) return next(err);
+    res.send(obj);
+  });
+});
+
 /*
  * GET screenshot.
  */
@@ -33,13 +44,3 @@ app.get('/:url(*)', ratelimit(60, 10), function(req, res, next){
   });
 });
 
-/**
- * GET stats.
- */
-
-app.get('/stats', function(req, res){
-  db.hgetall('screenshot:stats', function(err, obj){
-    if (err) return next(err);
-    res.send(obj);
-  });
-});
