@@ -28,7 +28,7 @@ app.get('/', function(req, res, next){
   var path = join(dir, id + '.png');
   rasterize(url, path, function(err){
     if (err) return next(err);
-    app.emit('screenshot', path, id);
+    app.emit('screenshot', url, path, id);
     res.sendfile(path);
   });
 });
