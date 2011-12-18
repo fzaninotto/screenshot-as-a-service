@@ -18,6 +18,7 @@ $ npm install
 ```
 $ node app
 Express server listening on port 3000
+```
 
 ## Todo
 
@@ -29,7 +30,7 @@ Express server listening on port 3000
   - escape shell args
   - moar logging
   - dimensions
-  - varnish```
+  - varnish
 
 ## License 
 
