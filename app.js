@@ -33,4 +33,4 @@ require('./palette');
 
 http.createServer(app).listen(3000);
 
-console.log("Express server listening for connections");
+console.log("Express server listening on port 3000");

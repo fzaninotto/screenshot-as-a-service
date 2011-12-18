@@ -9,18 +9,26 @@
 
   - infinite scroll page displaying rasters
   - service error handling
+  - production config
   - zmq workers 
   - request meta-data for the url (palette etc)
   - dimensions
   - escape shell args
   - moar logging
 
-## Installation
+## Setup
 
   First clone the repo, then install the deps with `npm`:
   
 ```
 $ npm install
+```
+
+  Run the app:
+
+```
+$ node app
+Express server listening on port 3000
 ```
 
 ## License 
