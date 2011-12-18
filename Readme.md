@@ -1,7 +1,7 @@
 
 # Screenshot application
 
-  A simple screenshot application & web service powered by [Express](http://expressjs.com), Redis, [node-canvas](http://github.com/learnboost/node-canvas), [palette](http://github.com/visionmedia/palette), and [PhantomJS](http://www.phantomjs.org/).
+  A simple screenshot application & web service powered by [Express](http://expressjs.com), [Redis](http://redis.io), [node-canvas](http://github.com/learnboost/node-canvas), [palette](http://github.com/visionmedia/palette), and [PhantomJS](http://www.phantomjs.org/).
   
   ![rest screenshot web service](http://f.cl.ly/items/3v0V1y290V422J3a2r2o/Grab.png) 
 
