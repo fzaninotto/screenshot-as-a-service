@@ -6,4 +6,5 @@
   - zmq workers
   - request meta-data for the url (palette etc)
   - dimensions
+  - escape shell args
   - logging
