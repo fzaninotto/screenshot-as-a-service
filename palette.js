@@ -12,8 +12,19 @@ var db = app.db;
 
 app.on('screenshot', function(url, path, id){
   console.log('palette - reading %s', path);
-  fs.readFile(path, function(err, buf){
+  colors(path, function(err, colors){
     if (err) return console.error(err.stack);
+    
+  })
+});
+
+/**
+ * Get colors for `path` and invoke `fn(err, colors)`.
+ */
+
+function colors(path, fn) {
+  fs.readFile(path, function(err, buf){
+    if (err) return fn(err);
 
     var canvas = new Canvas
       , ctx = canvas.getContext('2d')
@@ -21,30 +32,22 @@ app.on('screenshot', function(url, path, id){
 
     img.src = buf;
     canvas.width = img.width;
-    canvas.height = img.height + 50;
-    ctx.fillStyle = 'white';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    canvas.height = img.height;
     ctx.drawImage(img, 0, 0);
-    paintPalette(canvas);
-    fs.writeFile('/tmp/out.png', canvas.toBuffer(), function(err){
-      if (err) throw err;
-      console.log('saved');
-    });
+    var colors = palette(canvas, 8).map(rgb);
+    fn(null, colors);
   });
-});
+}
 
-function paintPalette(canvas) {
-  var x = 0;
-  var colors = palette(canvas)
-    , ctx = canvas.getContext('2d');
-  colors.forEach(function(color){
-    var r = color[0]
-      , g = color[1]
-      , b = color[2]
-      , val = r << 16 | g << 8 | b
-      , str = '#' + val.toString(16);
+/**
+ * Return the RGB value for the `color`
+ * array returned by palette().
+ */
 
-    ctx.fillStyle = str;
-    ctx.fillRect(x += 31, canvas.height - 40, 30, 30);
-  });
+function rgb(color) {
+  var r = color[0]
+    , g = color[1]
+    , b = color[2]
+    , n = r << 16 | g << 8 | b;
+  return n;
 }
