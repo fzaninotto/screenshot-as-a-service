@@ -10,11 +10,11 @@
   - infinite scroll page displaying rasters
   - service error handling
   - production config
-  - zmq workers 
   - request meta-data for the url (palette etc)
-  - dimensions
+  - zmq workers + limit phantomjs concurrency
   - escape shell args
   - moar logging
+  - dimensions
   - varnish
 
 ## Setup
