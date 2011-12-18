@@ -12,6 +12,7 @@ app.configure(function(){
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
   app.set('phantom', 'phantomjs');
+  app.set('screenshots', '/tmp');
   app.set('root', __dirname);
   app.use(express.favicon());
   app.use(express.logger('dev'));
