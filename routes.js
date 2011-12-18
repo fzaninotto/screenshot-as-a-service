@@ -22,7 +22,7 @@ app.get('/', function(req, res, next){
  * GET screenshot.
  */
 
-app.get('/', function(req, res, next){
+app.get('/', ratelimit(100), function(req, res, next){
   var url = req.query.url;
   if (!url) return res.send(400);
   var id = utils.md5(url);
@@ -38,7 +38,7 @@ app.get('/', function(req, res, next){
  * GET stats.
  */
 
-app.get('/stats', ratelimit(10), function(req, res){
+app.get('/stats', function(req, res){
   db.hgetall('screenshot:stats', function(err, obj){
     if (err) return next(err);
     res.send(obj);
