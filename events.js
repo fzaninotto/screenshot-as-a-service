@@ -1,4 +1,5 @@
 
+var parse = require('url').parse;
 var db = app.db;
 
 /**
@@ -6,7 +7,10 @@ var db = app.db;
  */
 
 app.on('screenshot', function(url, path, id){
-  db.zadd('screenshots', Date.now(), id);
+  var now = Date.now();
+  db.zadd('screenshot:ids', now, id);
+  db.zadd('screenshot:urls', now, url);
+  db.zadd('screenshot:hosts', now, parse(url).host);
   db.hmset('screenshot:' + id, {
     path: path,
     url: url,
