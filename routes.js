@@ -43,7 +43,11 @@ app.get('/:url(*)', ratelimit(60, 10), function(req, res, next){
     , viewportHeight: 600
   };
 
-  console.log('screenshot - rasterizing %s', url);
+  console.log('screenshot - rasterizing %s %dx%d'
+    , url
+    , options.viewportWidth
+    , options.viewportHeight);
+
   rasterize(url, options, function(err){
     if (err) return next(err);
     console.log('screenshot - rasterized %s', url);
