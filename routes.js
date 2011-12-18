@@ -5,10 +5,6 @@ var rasterize = require('./lib/rasterize')
   , join = path.join
   , fs = require('fs');
 
-/**
- * Screenshots directory.
- */
-
 var dir = app.get('screenshots');
 
 /*

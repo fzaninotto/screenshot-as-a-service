@@ -1,22 +1,21 @@
 
+var db = app.db;
+
 /**
  * Set screenshot:<id> hash.
  */
 
 app.on('screenshot', function(path, id){
-  app.db.hmset('screenshot:' + id, {
+  db.hmset('screenshot:' + id, {
     path: path,
     id: id
   });
 });
 
 /**
- * Set screenshot:<id> hash.
+ * Screenshot statistics.
  */
 
 app.on('screenshot', function(path, id){
-  app.db.hmset('screenshot:' + id, {
-    path: path,
-    id: id
-  });
+  db.hincrby('screenshot:stats', 'total', 1);
 });
