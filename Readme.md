@@ -29,7 +29,7 @@ Express server listening on port 3000
   - request meta-data for the url (palette etc)
   - zmq workers + limit phantomjs concurrency
   - escape shell args
-  - moar logging
+  - relative created_at display
   - dimensions
   - varnish
 
