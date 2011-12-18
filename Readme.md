@@ -7,8 +7,9 @@
 
 ## Setup
 
-  First clone the repo, then install the deps with `npm`:
-  
+  First [install](http://code.google.com/p/phantomjs/wiki/Installation) phantomjs,
+  then clone this repo and install the deps:
+
 ```
 $ npm install
 ```
