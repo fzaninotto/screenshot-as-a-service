@@ -28,6 +28,7 @@ app.configure('development', function(){
 
 require('./routes');
 require('./events');
+require('./palette');
 
 http.createServer(app).listen(3000);
 

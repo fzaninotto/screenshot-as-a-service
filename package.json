@@ -6,5 +6,6 @@
       "jade": "*"
     , "palette": "*"
     , "redis": "0.7.x"
+    , "canvas": "0.8.x"
   }
 }
