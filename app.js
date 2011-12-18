@@ -29,6 +29,7 @@ app.configure('development', function(){
 });
 
 require('./routes');
+require('./events');
 
 http.createServer(app).listen(3000);
 

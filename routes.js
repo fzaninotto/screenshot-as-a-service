@@ -1,5 +1,5 @@
 
-var rasterize = require('../lib/rasterize')
+var rasterize = require('./lib/rasterize')
   , crypto = require('crypto')
   , path = require('path')
   , join = path.join
@@ -33,17 +33,6 @@ app.get('/', function(req, res){
     if (err) return res.send(500, 'Something broke!\n');
     app.emit('screenshot', path, id);
     res.sendfile(path);
-  });
-});
-
-/**
- * Set screenshot:<id> hash.
- */
-
-app.on('screenshot', function(path, id){
-  app.db.hmset('screenshot:' + id, {
-    path: path,
-    id: id
   });
 });
 
