@@ -9,7 +9,7 @@ var rasterize = require('../lib/rasterize')
  * Screenshots directory.
  */
 
-var dir = app.get('screenshoots');
+var dir = app.get('screenshots');
 
 /*
  * GET home page.
