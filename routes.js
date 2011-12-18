@@ -40,8 +40,8 @@ app.get('/:url(*)', ratelimit(60, 10), function(req, res, next){
 
   var options = {
       path: join(dir, id + '.png')
-    , viewportWidth: req.query.width || 800
-    , viewportHeight: req.query.height || 600
+    , viewportWidth: req.query.width || app.get('default viewport width')
+    , viewportHeight: req.query.height || app.get('default viewport height')
   };
 
   console.log('screenshot - rasterizing %s %dx%d'

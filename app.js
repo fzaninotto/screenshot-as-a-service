@@ -15,6 +15,8 @@ app.configure(function(){
   app.set('view engine', 'jade');
   app.set('phantom', 'phantomjs');
   app.set('screenshots', '/tmp');
+  app.set('default viewport width', 1024);
+  app.set('default viewport height', 600);
   app.set('colors', 3);
   app.set('root', __dirname);
   app.use(express.favicon());
