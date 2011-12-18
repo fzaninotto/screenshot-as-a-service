@@ -6,12 +6,25 @@ o = $;
 // boot
 
 o(function(){
-  console.log(render('screenshot', { title: 'yay' }));
+  render('screenshot', {
+    title: 'Google',
+    url: 'google.com'
+  }).appendTo('body');
+
+  render('screenshot', {
+    title: 'Yahoo',
+    url: 'yahoo.com'
+  }).appendTo('body');
+
+  render('screenshot', {
+    title: 'Bing',
+    url: 'bing.com'
+  }).appendTo('body');
 })
 
 function render(name, obj) {
   var tmpl = template(name);
-  return whiskers.render(tmpl, obj);
+  return $(whiskers.render(tmpl, obj));
 }
 
 /**
