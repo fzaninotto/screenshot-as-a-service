@@ -22,7 +22,7 @@ app.get('/', function(req, res, next){
  * GET screenshot.
  */
 
-app.get('/', ratelimit(100), function(req, res, next){
+app.get('/', ratelimit(100, 10), function(req, res, next){
   var url = req.query.url;
   if (!url) return res.send(400);
   var id = utils.md5(url);
