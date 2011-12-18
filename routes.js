@@ -56,6 +56,23 @@ app.get('/screenshots/:from..:to', function(req, res, next){
   });
 });
 
+/**
+ * GET serve when already rasterized.
+ */
+
+app.get('/:url(*)', function(req, res, next){
+  var url = utils.url(req.params.url);
+  db.hget('screenshot:url:id', url, function(err, id){
+    if (err) return next(err);
+    if (!id) return next();
+    db.hget('screenshot:' + id, 'path', function(err, path){
+      if (err) return next(err);
+      console.log('screenshot - serving rasterized %s', url);
+      res.sendfile(path);
+    });
+  });
+});
+
 /*
  * GET screenshot.
  */
