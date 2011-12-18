@@ -12,6 +12,7 @@ app.on('screenshot', function(url, path, id){
   db.zadd('screenshot:urls', now, url);
   db.zadd('screenshot:hosts', now, parse(url).host);
   db.hmset('screenshot:' + id, {
+    created_at: now,
     path: path,
     url: url,
     id: id
