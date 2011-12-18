@@ -1,13 +1,16 @@
 var page = require('webpage').create()
   , url = phantom.args[0]
-  , path = phantom.args[1];
+  , path = phantom.args[1]
+  , size = phantom.args[2] || '';
 
 if (!url) throw new Error('url required');
 if (!path) throw new Error('output path required');
 
+size = size.split('x');
+
 page.viewportSize = {
-    width: 600
-  , height: 600
+    width: ~~size[0] || 1024
+  , height: ~~size[1] || 600
 };
 
 page.open(url, function (status) {
