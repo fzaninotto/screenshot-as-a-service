@@ -31,6 +31,7 @@ app.get('/', function(req, res){
   var path = join(dir, hash + '.png');
   rasterize(url, path, function(err){
     if (err) return res.send(500, 'Something broke!\n');
+    app.emit('screenshot', path, hash);
     res.sendfile(path);
   });
 });
