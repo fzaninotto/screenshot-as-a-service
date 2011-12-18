@@ -37,8 +37,10 @@ app.get('/:url(*)', ratelimit(60, 10), function(req, res, next){
   if (!url) return res.send(400);
   var id = utils.md5(url);
   var path = join(dir, id + '.png');
+  console.log('screenshot - rasterizing %s', url);
   rasterize(url, path, function(err){
     if (err) return next(err);
+    console.log('screenshot - rasterized %s', url);
     app.emit('screenshot', url, path, id);
     res.sendfile(path);
   });

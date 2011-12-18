@@ -14,8 +14,13 @@ app.on('screenshot', function(url, path, id){
   console.log('palette - reading %s', path);
   colors(path, function(err, colors){
     if (err) return console.error(err.stack);
-    
-  })
+    console.log('palette - colors computed');
+
+    colors.forEach(function(color){
+      db.sadd('screenshot:color:' + color, id);
+      db.sadd('screenshot:' + id + ':colors', color);
+    });
+  });
 });
 
 /**
