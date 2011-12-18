@@ -36,6 +36,13 @@ app.get('/', function(req, res){
   });
 });
 
+app.on('screenshot', function(path, hash){
+  app.db.hmset('screenshot:' + hash, {
+    path: path,
+    hash: hash
+  });
+});
+
 /**
  * MD5 the given `str`.
  */

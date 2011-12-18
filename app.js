@@ -4,11 +4,13 @@
  */
 
 var express = require('../express')
+  , redis = require('redis')
   , http = require('http');
 
 app = express();
 
 app.configure(function(){
+  app.db = redis.createClient();
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
   app.set('phantom', 'phantomjs');
