@@ -9,6 +9,7 @@ var db = app.db;
 app.on('screenshot', function(url, path, id){
   var now = Date.now();
   console.log('screenshot - saving meta-data');
+  db.hset('screenshot:url:id', url, id);
   db.zadd('screenshot:ids', now, id);
   db.zadd('screenshot:urls', now, url);
   db.zadd('screenshot:hosts', now, parse(url).host);
