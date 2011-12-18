@@ -15,6 +15,7 @@ app.configure(function(){
   app.set('view engine', 'jade');
   app.set('phantom', 'phantomjs');
   app.set('screenshots', '/tmp');
+  app.set('colors', 3);
   app.set('root', __dirname);
   app.use(express.favicon());
   app.use(express.logger('dev'));

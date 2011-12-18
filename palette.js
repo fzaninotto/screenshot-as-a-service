@@ -12,7 +12,7 @@ var db = app.db;
 
 app.on('screenshot', function(url, path, id){
   console.log('palette - reading %s', path);
-  colors(path, function(err, colors){
+  colors(path, app.get('colors'), function(err, colors){
     if (err) return console.error(err.stack);
     console.log('palette - colors computed');
 
@@ -27,7 +27,7 @@ app.on('screenshot', function(url, path, id){
  * Get colors for `path` and invoke `fn(err, colors)`.
  */
 
-function colors(path, fn) {
+function colors(path, n, fn) {
   fs.readFile(path, function(err, buf){
     if (err) return fn(err);
 
@@ -39,7 +39,7 @@ function colors(path, fn) {
     canvas.width = img.width;
     canvas.height = img.height;
     ctx.drawImage(img, 0, 0);
-    var colors = palette(canvas, 8).map(rgb);
+    var colors = palette(canvas, n).map(rgb);
     fn(null, colors);
   });
 }
