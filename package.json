@@ -3,7 +3,6 @@
   , "version": "0.0.1"
   , "private": true
   , "dependencies": {
-      "express": "3.0.0alpha1-pre"
-    , "jade": ">= 0.0.1"
+    "jade": "*"
   }
 }
