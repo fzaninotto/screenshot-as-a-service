@@ -33,7 +33,7 @@ app.get('/stats', function(req, res){
  */
 
 app.get('/:url(*)', ratelimit(60, 10), function(req, res, next){
-  var url = req.params.url;
+  var url = utils.url(req.params.url);
   if (!url) return res.send(400);
   var id = utils.md5(url);
   var path = join(dir, id + '.png');
