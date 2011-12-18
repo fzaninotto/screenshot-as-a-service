@@ -14,7 +14,6 @@ var dir = app.get('screenshots')
  */
 
 app.get('/', function(req, res, next){
-  if (req.query.url) return next();
   res.render('index', { title: 'Express' });
 });
 
@@ -22,8 +21,8 @@ app.get('/', function(req, res, next){
  * GET screenshot.
  */
 
-app.get('/', ratelimit(100, 10), function(req, res, next){
-  var url = req.query.url;
+app.get('/:url(*)', ratelimit(100, 10), function(req, res, next){
+  var url = req.params.url;
   if (!url) return res.send(400);
   var id = utils.md5(url);
   var path = join(dir, id + '.png');
