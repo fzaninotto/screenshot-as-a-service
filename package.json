@@ -3,7 +3,8 @@
   , "version": "0.0.1"
   , "private": true
   , "dependencies": {
-      "jade": "*"
+      "express": "https://github.com/visionmedia/express/zipball/master"
+    , "jade": "*"
     , "palette": "*"
     , "redis": "0.7.x"
     , "canvas": "0.8.x"

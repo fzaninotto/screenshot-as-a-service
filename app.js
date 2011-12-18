@@ -3,7 +3,7 @@
  * Module dependencies.
  */
 
-var express = require('../express')
+var express = require('express')
   , redis = require('redis')
   , http = require('http');
 
