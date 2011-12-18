@@ -4,6 +4,7 @@
  */
 
 var express = require('express')
+  , stylus = require('stylus')
   , redis = require('redis')
   , http = require('http');
 
@@ -21,6 +22,7 @@ app.configure(function(){
   app.set('root', __dirname);
   app.use(express.favicon());
   app.use(express.logger('dev'));
+  app.use(stylus.middleware({ src: __dirname + '/public' }));
   app.use(express.static(__dirname + '/public'));
   app.use(app.router);
 });
