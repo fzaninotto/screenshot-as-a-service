@@ -28,7 +28,7 @@ o(function(){
 
 function render(name, obj) {
   var tmpl = template(name);
-  return $(whiskers.render(tmpl, obj));
+  return o(whiskers.render(tmpl, obj));
 }
 
 /**
