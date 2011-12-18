@@ -7,11 +7,13 @@ var express = require('../express')
   , routes = require('./routes')
   , http = require('http');
 
-var app = express();
+app = express();
 
 app.configure(function(){
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
+  app.set('phantom', 'phantomjs');
+  app.set('root', __dirname);
   app.use(express.favicon());
   app.use(express.logger('dev'));
   app.use(express.static(__dirname + '/public'));
@@ -25,6 +27,7 @@ app.configure('development', function(){
 });
 
 app.get('/', routes.index);
+app.get('/', routes.screenshot);
 
 http.createServer(app).listen(3000);
 
