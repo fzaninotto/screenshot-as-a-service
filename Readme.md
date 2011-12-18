@@ -5,18 +5,6 @@
   
   ![rest screenshot web service](http://f.cl.ly/items/3O0L1u3D2h1t21074705/Grab.png) 
 
-## Todo
-
-  - infinite scroll page displaying rasters
-  - service error handling
-  - production config
-  - request meta-data for the url (palette etc)
-  - zmq workers + limit phantomjs concurrency
-  - escape shell args
-  - moar logging
-  - dimensions
-  - varnish
-
 ## Setup
 
   First clone the repo, then install the deps with `npm`:
@@ -30,7 +18,18 @@ $ npm install
 ```
 $ node app
 Express server listening on port 3000
-```
+
+## Todo
+
+  - infinite scroll page displaying rasters
+  - service error handling
+  - production config
+  - request meta-data for the url (palette etc)
+  - zmq workers + limit phantomjs concurrency
+  - escape shell args
+  - moar logging
+  - dimensions
+  - varnish```
 
 ## License 
 
