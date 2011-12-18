@@ -1,5 +1,6 @@
 
 var rasterize = require('./lib/rasterize')
+  , ratelimit = require('./lib/ratelimit')
   , utils = require('./lib/utils')
   , path = require('path')
   , join = path.join
@@ -37,7 +38,7 @@ app.get('/', function(req, res, next){
  * GET stats.
  */
 
-app.get('/stats', function(req, res){
+app.get('/stats', ratelimit(10), function(req, res){
   db.hgetall('screenshot:stats', function(err, obj){
     if (err) return next(err);
     res.send(obj);
