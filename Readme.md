@@ -5,3 +5,4 @@
   - extract colors
   - zmq workers
   - dimensions
+  - logging
