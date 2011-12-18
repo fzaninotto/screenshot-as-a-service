@@ -21,7 +21,7 @@ app.get('/', function(req, res, next){
  * GET screenshot.
  */
 
-app.get('/:url(*)', ratelimit(100, 10), function(req, res, next){
+app.get('/:url(*)', ratelimit(60, 10), function(req, res, next){
   var url = req.params.url;
   if (!url) return res.send(400);
   var id = utils.md5(url);
