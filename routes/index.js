@@ -6,16 +6,16 @@ var rasterize = require('../lib/rasterize')
  * GET home page.
  */
 
-exports.index = function(req, res, next){
+app.get('/', function(req, res, next){
   if (req.query.url) return next();
   res.render('index', { title: 'Express' });
-};
+});
 
 /*
  * GET screenshot.
  */
 
-exports.screenshot = function(req, res){
+app.get('/', function(req, res){
   var url = req.query.url;
   if (!url) return res.send(400);
   var path = '/tmp/out.png';
@@ -23,5 +23,5 @@ exports.screenshot = function(req, res){
     if (err) return res.send(500, 'Something broke!\n');
     res.sendfile(path);
   });
-};
+});
 
