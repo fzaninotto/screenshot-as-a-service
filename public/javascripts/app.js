@@ -22,6 +22,10 @@ o(function(){
   }).appendTo('body');
 })
 
+/**
+ * Render the given template `name` with `obj`.
+ */
+
 function render(name, obj) {
   var tmpl = template(name);
   return $(whiskers.render(tmpl, obj));
