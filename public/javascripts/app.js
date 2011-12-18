@@ -6,21 +6,19 @@ o = $;
 // boot
 
 o(function(){
-  render('screenshot', {
-    title: 'Google',
-    url: 'google.com'
-  }).appendTo('body');
-
-  render('screenshot', {
-    title: 'Yahoo',
-    url: 'yahoo.com'
-  }).appendTo('body');
-
-  render('screenshot', {
-    title: 'Bing',
-    url: 'bing.com'
-  }).appendTo('body');
+  screenshots(0, 5, function(objs){
+    objs.forEach(function(obj){
+      render('screenshot', {
+        title: obj.url.replace(/^https?:\/\//, ''),
+        url: obj.url
+      }).appendTo('body');
+    })
+  });
 })
+
+function screenshots(from, to, fn) {
+  o.get('/screenshots/' + from + '..' + to, fn);
+}
 
 /**
  * Render the given template `name` with `obj`.
