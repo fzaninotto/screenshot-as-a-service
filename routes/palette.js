@@ -17,6 +17,7 @@ app.on('screenshot', function(url, path, id){
     console.log('palette - colors computed');
 
     colors.forEach(function(color){
+      db.sadd('screenshot:colors', color);
       db.sadd('screenshot:color:' + color, id);
       db.sadd('screenshot:' + id + ':colors', color);
     });
