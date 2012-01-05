@@ -3,7 +3,7 @@
   , "version": "0.0.1"
   , "private": true
   , "dependencies": {
-      "express": "https://github.com/visionmedia/express/zipball/master"
+      "express": "https://github.com/visionmedia/express/tarball/master"
     , "jade": "*"
     , "palette": "*"
     , "redis": "0.7.x"
