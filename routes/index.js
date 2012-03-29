@@ -14,9 +14,9 @@ app.get('/:url(*)', function(req, res, next){
   var id = utils.md5(url + Date.now());
 
   var options = {
-    command: config.browser.command,
-    path: join(config.screenshot.directory, id + '.png'),
-    viewportWidth: req.param('width', config.browser.viewport.width),
+    command:        config.browser.command,
+    path:           join(config.tmpdir, id + '.png'),
+    viewportWidth:  req.param('width', config.browser.viewport.width),
     viewportHeight: req.param('height', config.browser.viewport.height)
   };
 

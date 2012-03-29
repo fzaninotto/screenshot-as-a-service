@@ -3,5 +3,4 @@ browser:
   viewport:
     width:    1024
     height:   600
-screenshot:
-  directory: '/tmp'
+tmpdir: '/tmp'

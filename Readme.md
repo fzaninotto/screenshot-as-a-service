@@ -41,8 +41,7 @@ browser:
   viewport:
     width:    1024
     height:   600
-screenshot:
-  directory: '/tmp'
+tmpdir: '/tmp'
 ```
 
 For instance, if you want to setup a proxy for phantomjs, create a `config/development.yaml` as follows:
