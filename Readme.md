@@ -1,18 +1,16 @@
+# Screenshot as a Service
 
-# Screenshot Service
-
-  A simple screenshot web service powered by [Express](http://expressjs.com) and [PhantomJS](http://www.phantomjs.org/).
+A simple screenshot web service powered by [Express](http://expressjs.com) and [PhantomJS](http://www.phantomjs.org/). Forked from [screenshot-app](http://github.com/visionmedia/screenshot-app).
 
 ## Setup
 
-  First [install](http://code.google.com/p/phantomjs/wiki/Installation) phantomjs,
-  then clone this repo and install the deps:
+First [install](http://code.google.com/p/phantomjs/wiki/Installation) phantomjs, then clone this repo and install the deps:
 
 ```
 $ npm install
 ```
 
-  Run the app:
+Run the app:
 
 ```
 $ node app
@@ -21,15 +19,15 @@ Express server listening on port 3000
 
 ## Usage
 
-```
+```sh
 # standard 1024x600 screenshot
-curl http://localhost:3000/www.google.com > google.png
+$ curl http://localhost:3000/www.google.com > google.png
 
 # custom viewport size
-curl 'http://localhost:3000/www.google.com?width=800&height=600' > google.png
+$ curl 'http://localhost:3000/www.google.com?width=800&height=600' > google.png
 
 # asynchronous screenshot
-curl 'http://localhost:3000/www.google.com?callback=http://www.myservice.com/screenshot/google'
+$ curl 'http://localhost:3000/www.google.com?callback=http://www.myservice.com/screenshot/google'
 # this will send the screenshot in the body of a POST request to the callback url
 ```
 
@@ -37,7 +35,7 @@ curl 'http://localhost:3000/www.google.com?callback=http://www.myservice.com/scr
 
 Create a `config/development.yaml` or a `config/production.yaml` to override any of the settings found in the `config/default.yaml`:
 
-```
+```yml
 browser:
   command: phantomjs
   viewport:
@@ -49,7 +47,7 @@ screenshot:
 
 For instance, if you want to setup a proxy for phantomjs, create a `config/development.yaml` as follows:
 
-```
+```yml
 browser:
   command: 'phantomjs --proxy=myproxy:1234'
 ```
@@ -91,7 +89,7 @@ setInterval(poller, 60000);
 
 Every minute, this script will refresh the two screenshots `google.png` and `yahoo.png`.
 
-## License 
+## License
 
 (The MIT License)
 
