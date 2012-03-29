@@ -22,12 +22,20 @@ Express server listening on port 3000
 ## Usage
 
 ```
-wget -O screenshot.png http://localhost:3000/www.google.com
+# standard 1024x600 screenshot
+curl http://localhost:3000/www.google.com > google.png
+
+# custom viewport size
+curl 'http://localhost:3000/www.google.com?width=800&height=600' > google.png
+
+# asynchronous screenshot
+curl 'http://localhost:3000/www.google.com?callback=http://www.myservice.com/screenshot/google'
+# this will send the screenshot in the body of a POST request to the callback url
 ```
 
 ## Configuration
 
-Create a `config/development.yaml` or a `config/production.yaml` to override any of those settings:
+Create a `config/development.yaml` or a `config/production.yaml` to override any of the settings found in the `config/default.yaml`:
 
 ```
 browser:
@@ -45,6 +53,43 @@ For instance, if you want to setup a proxy for phantomjs, create a `config/devel
 browser:
   command: 'phantomjs --proxy=myproxy:1234'
 ```
+
+## Usage Example
+
+Here is an example application that takes asynchronous screenshots of a list of websites at regular intervals and saves them to disk:
+
+```js
+var http = require('http');
+var url  = require('url');
+var fs   = require('fs');
+
+// create a server to receive callbacks from the screenshot service
+// and save the body to a PNG file
+http.createServer(function(req, res) {
+  var name = url.parse(req.url).pathname.slice(1);
+  req.pipe(fs.createWriteStream(__dirname + '/' + name + '.png'));
+  res.writeHead(200)
+  res.end();
+}).listen(8124);
+console.log("Server running on port 8124");
+
+var sites = {
+  'google': 'http://www.google.com',
+  'yahoo':  'http://www.yahoo.com'
+};
+var screenshotServiceUrl = 'http://my.screenshot.app:3000/'; // must be running screenshot-app
+
+// call the screenshot service using the current server as a callback
+var poller = function() {
+  for (name in sites) {
+    var options = url.parse(screenshotServiceUrl + sites[name] + '?callback=http://localhost:8124/' + name);
+    http.get(options, function(res) {});
+  };
+}
+setInterval(poller, 60000);
+```
+
+Every minute, this script will refresh the two screenshots `google.png` and `yahoo.png`.
 
 ## License 
 
