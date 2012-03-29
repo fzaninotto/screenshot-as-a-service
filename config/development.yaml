@@ -1,0 +1,3 @@
+browser:
+  command: phantomjs-wrapper
+  options: '--proxy=vi-proxy:3128'

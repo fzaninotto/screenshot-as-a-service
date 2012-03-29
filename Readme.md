@@ -1,9 +1,7 @@
 
-# Screenshot application
+# Screenshot Service
 
-  A simple screenshot application & web service powered by [Express](http://expressjs.com), [Redis](http://redis.io), [node-canvas](http://github.com/learnboost/node-canvas), [palette](http://github.com/visionmedia/palette), and [PhantomJS](http://www.phantomjs.org/).
-  
-  ![rest screenshot web service](http://f.cl.ly/items/3v0V1y290V422J3a2r2o/Grab.png) 
+  A simple screenshot web service powered by [Express](http://expressjs.com) and [PhantomJS](http://www.phantomjs.org/).
 
 ## Setup
 
@@ -21,23 +19,40 @@ $ node app
 Express server listening on port 3000
 ```
 
-## Todo
+## Usage
 
-  - infinite scroll page displaying rasters
-  - service error handling
-  - production config
-  - request meta-data for the url (palette etc)
-  - zmq workers + limit phantomjs concurrency
-  - escape shell args
-  - relative created_at display
-  - dimensions
-  - varnish
+```
+wget -O screenshot.png http://localhost:3000/www.google.com
+```
+
+## Configuration
+
+Create a `config/development.yaml` or a `config/production.yaml` to override any of those settings:
+
+```
+browser:
+  command: phantomjs
+  options: ''
+  viewport:
+    width:    1024
+    height:   600
+screenshot:
+  directory: '/tmp'
+```
+
+For instance, if you use a wrapper command for phantomjs and need to setup a proxy in development, create a `config/development.yaml`as follows:
+
+```
+browser:
+  command: phantomjs-wrapper
+  options: '--proxy=myproxy:1234
+```
 
 ## License 
 
 (The MIT License)
 
-Copyright (c) 2011 TJ Holowaychuk &lt;tj@vision-media.ca&gt;
+Copyright (c) 2012 François Zaninotto, TJ Holowaychuk &lt;tj@vision-media.ca&gt;
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
