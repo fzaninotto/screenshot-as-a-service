@@ -1,10 +1,10 @@
 {
-  "name": "screenshot-service",
-  "version": "0.0.1",
-  "private": true,
+  "name": "screenshot-as-a-service",
+  "description": "Website screenshot service powered by node.js and phantomjs",
+  "version": "1.0.0",
   "dependencies": {
-    "express": "latest",
-    "config": "latest",
-    "request": "latest"
+    "express": "2.5.8",
+    "config": "0.4.11",
+    "request": "2.9.153"
   }
 }
