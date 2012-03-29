@@ -32,7 +32,6 @@ Create a `config/development.yaml` or a `config/production.yaml` to override any
 ```
 browser:
   command: phantomjs
-  options: ''
   viewport:
     width:    1024
     height:   600
@@ -40,12 +39,11 @@ screenshot:
   directory: '/tmp'
 ```
 
-For instance, if you use a wrapper command for phantomjs and need to setup a proxy in development, create a `config/development.yaml`as follows:
+For instance, if you want to setup a proxy for phantomjs, create a `config/development.yaml` as follows:
 
 ```
 browser:
-  command: phantomjs-wrapper
-  options: '--proxy=myproxy:1234
+  command: 'phantomjs --proxy=myproxy:1234'
 ```
 
 ## License 

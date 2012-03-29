@@ -1,6 +1,5 @@
 browser:
   command: phantomjs
-  options: ''
   viewport:
     width:    1024
     height:   600

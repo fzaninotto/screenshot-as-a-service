@@ -13,8 +13,7 @@ app.get('/:url(*)', function(req, res, next){
   var id = utils.md5(url);
 
   var options = {
-  	command: config.browser.command,
-  	options: config.browser.options,
+    command: config.browser.command,
     path: join(config.screenshot.directory, id + '.png'),
     viewportWidth: req.query.width || config.browser.viewport.width,
     viewportHeight: req.query.height || config.browser.viewport.height
