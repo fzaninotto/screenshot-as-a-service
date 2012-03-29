@@ -1,2 +1,3 @@
 node_modules
-*.css
+config/development.yaml
+config/production.yaml
