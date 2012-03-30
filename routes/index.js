@@ -24,12 +24,14 @@ app.get('/:url(*)', function(req, res, next){
 
   if (req.param('callback', false)) {
     // asynchronous
-    var callback = req.param('callback');
+    var callback = utils.url(req.param('callback'));
     res.send('Will post screenshot of ' + url + ' to ' + callback + ' when processed');
     rasterize(url, options, function(err) {
-      console.log('screenshot - streaming to ' + callback);
+      console.log('screenshot - streaming to %s', callback);
       var fileStream = fs.createReadStream(options.path);
-      fileStream.pipe(request.post(callback));
+      fileStream.pipe(request.post(callback, function(err) {
+        console.log('Error while streaming screenshot: %s', err.message);
+      }));
       fileStream.on('end', function() {
         fs.unlink(options.path);
       });
