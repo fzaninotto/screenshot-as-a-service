@@ -57,7 +57,7 @@ module.exports = function(app) {
         console.log('screenshot - streaming to %s', callback);
         var fileStream = fs.createReadStream(path);
         fileStream.pipe(request.post(callback, function(err) {
-          console.log('Error while streaming screenshot: %s', err.message);
+          if (err) console.log('Error while streaming screenshot: %s', err);
         }));
         fileStream.on('end', function() {
           fs.unlink(path);
