@@ -91,9 +91,7 @@ Every minute, this script will refresh the two screenshots `google.png` and `yah
 ## TODO
 
 * Allow to configure phantomjs options through YAML config
-* Limit the number of phantomjs processes to avoid server explosion
 * Implement a simple queuing system forcing the use of asynchronous screenshots when the number of browser processes reaches the limit
-* Use phantomjs server capabilities to avoid closing browser processes and send them demands continously 
 
 ## License
 
