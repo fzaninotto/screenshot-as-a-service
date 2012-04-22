@@ -36,18 +36,19 @@ $ curl 'http://localhost:3000/www.google.com?callback=http://www.myservice.com/s
 Create a `config/development.yaml` or a `config/production.yaml` to override any of the settings found in the `config/default.yaml`:
 
 ```yml
-browser:
+rasterizer:
   command: phantomjs
-  viewport:
-    width:    1024
-    height:   600
-tmpdir: '/tmp'
+  port: 3001
+  path: '/tmp/'
+  viewport: '1024x600'
+server:
+  port: 3000
 ```
 
 For instance, if you want to setup a proxy for phantomjs, create a `config/development.yaml` as follows:
 
 ```yml
-browser:
+rasterizer:
   command: 'phantomjs --proxy=myproxy:1234'
 ```
 
