@@ -33,7 +33,7 @@ server = require('webserver').create();
  * url: http://www.google.com
  *
  * Optional headers:
- * path: google.png
+ * filename: google.png
  * width: 1024
  * height: 600
  * clipRect: { "top": 14, "left": 3, "width": 400, "height": 300 }
@@ -58,11 +58,11 @@ service = server.listen(port, function(request, response) {
     return;
   }
   var url = request.headers.url;
-  var path = basePath + (request.headers.path || (url.replace(new RegExp('https?://'), '').replace(/\//g, '.') + '.png'));
+  var path = basePath + (request.headers.filename || (url.replace(new RegExp('https?://'), '').replace(/\//g, '.') + '.png'));
   var page = new WebPage();
   page.viewportSize = {
-    width: request.headers.viewportWidth || defaultViewportSize.width,
-    height: request.headers.viewportHeight || defaultViewportSize.height
+    width: request.headers.width || defaultViewportSize.width,
+    height: request.headers.height || defaultViewportSize.height
   };
   if (request.headers.clipRect) {
     page.clipRect = JSON.parse(request.headers.clipRect);

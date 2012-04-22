@@ -1,6 +1,7 @@
-browser:
+rasterizer:
   command: phantomjs
-  viewport:
-    width:    1024
-    height:   600
-tmpdir: '/tmp'
+  port: 3001
+  path: '/tmp/'
+  viewport: '1024x600'
+server:
+  port: 3000
