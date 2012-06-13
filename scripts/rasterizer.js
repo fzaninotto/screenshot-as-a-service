@@ -83,10 +83,6 @@ service = server.listen(port, function(request, response) {
     page.release();
     response.close();
   });
-  page.onError = function(msg, trace) {
-    response.write('Error: Page triggered ' + msg + "\n");
-    response.close();
-  };
   // must start the response now, or phantom closes the connection
   response.statusCode = 200;
   response.write('');
