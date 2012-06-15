@@ -3,7 +3,7 @@
  */
 var config = require('config');
 var express = require('express');
-var RasterizerService = require('./lib/RasterizerService');
+var RasterizerService = require('./lib/rasterizerService');
 
 // rasterizer
 var rastconfig = config.rasterizer;
