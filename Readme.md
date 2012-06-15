@@ -65,9 +65,11 @@ var fs   = require('fs');
 // and save the body to a PNG file
 http.createServer(function(req, res) {
   var name = url.parse(req.url).pathname.slice(1);
+  req.on('end', function () {
+    res.writeHead(200);
+    res.end();
+  });
   req.pipe(fs.createWriteStream(__dirname + '/' + name + '.png'));
-  res.writeHead(200)
-  res.end();
 }).listen(8124);
 console.log("Server running on port 8124");
 
