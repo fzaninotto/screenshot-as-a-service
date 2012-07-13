@@ -60,19 +60,25 @@ service = server.listen(port, function(request, response) {
   var url = request.headers.url;
   var path = basePath + (request.headers.filename || (url.replace(new RegExp('https?://'), '').replace(/\//g, '.') + '.png'));
   var page = new WebPage();
-  page.viewportSize = {
-    width: request.headers.width || defaultViewportSize.width,
-    height: request.headers.height || defaultViewportSize.height
-  };
-  if (request.headers.clipRect) {
-    page.clipRect = JSON.parse(request.headers.clipRect);
-  };
-  for (name in pageSettings) {
-    if (value = request.headers[pageSettings[name]]) {
-      value = (value == 'false') ? false : ((value == 'true') ? true : value);
-      page.settings[pageSettings[name]] = value;
-    }
-  };
+  try {
+    page.viewportSize = {
+      width: request.headers.width || defaultViewportSize.width,
+      height: request.headers.height || defaultViewportSize.height
+    };
+    if (request.headers.clipRect) {
+      page.clipRect = JSON.parse(request.headers.clipRect);
+    };
+    for (name in pageSettings) {
+      if (value = request.headers[pageSettings[name]]) {
+        value = (value == 'false') ? false : ((value == 'true') ? true : value);
+        page.settings[pageSettings[name]] = value;
+      }
+    };
+  } catch (err) {
+    response.statusCode = 500;
+    response.write('Error while parsing headers: ' + err.message);
+    return response.close();
+  }
   page.open(url, function(status) {
     if (status == 'success') {
       page.render(path);
