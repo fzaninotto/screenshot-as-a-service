@@ -17,8 +17,8 @@ process.on('SIGINT', function () {
 // web service
 var app = express.createServer();
 app.configure(function(){
-  app.use(app.router);
   app.use(express.static(__dirname + '/public'))
+  app.use(app.router);
   app.set('rasterizerService', rasterizerService);
 });
 app.configure('development', function() {
