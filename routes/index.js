@@ -10,21 +10,23 @@ module.exports = function(app) {
    */
   app.get('/', function(req, res) {
     res.send("\
-  USAGE:\n\
-  \n\
-  # Take a screenshot\n\
-  GET /www.google.com\n\
-  # Return a 1024x600 PNG screenshot of the www.google.com homepage\n\
-  \n\
-  # Custom viewport size\n\
-  GET /www.google.com?width=800&height=600\n\
-  # Return a 800x600 PNG screenshot of the www.google.com homepage\n\
-  \n\
-  # Asynchronous call\n\
-  GET /www.google.com?callback=http://www.myservice.com/screenshot/google\n\
-  # Return an empty response immediately (HTTP 200 OK),\n\
-  # then send a POST request to the callback URL when the screenshot is ready\n\
-  # with the PNG image in the body.\n");
+<html><body><pre>\n\
+USAGE:\n\
+\n\
+# Take a screenshot\n\
+GET /www.google.com\n\
+# Return a 1024x600 PNG screenshot of the www.google.com homepage\n\
+\n\
+# Custom viewport size\n\
+GET /www.google.com?width=800&height=600\n\
+# Return a 800x600 PNG screenshot of the www.google.com homepage\n\
+\n\
+# Asynchronous call\n\
+GET /www.google.com?callback=http://www.myservice.com/screenshot/google\n\
+# Return an empty response immediately (HTTP 200 OK),\n\
+# then send a POST request to the callback URL when the screenshot is ready\n\
+# with the PNG image in the body.\n\
+</pre></body>\n");
   });
 
   /*
