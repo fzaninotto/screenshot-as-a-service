@@ -5,29 +5,9 @@ var request = require('request');
 var spawn = require('child_process').spawn;
 
 module.exports = function(app) {
-  /*
-   * Usage
-   */
   app.get('/', function(req, res, next) {
     if (!req.param('url', false)) {
-      return res.send("\
-<html><body><pre>\n\
-USAGE:\n\
-\n\
-# Take a screenshot\n\
-GET /?url=www.google.com\n\
-# Return a 1024x600 PNG screenshot of the www.google.com homepage\n\
-\n\
-# Custom viewport size\n\
-GET /?url=www.google.com&width=800&height=600\n\
-# Return a 800x600 PNG screenshot of the www.google.com homepage\n\
-\n\
-# Asynchronous call\n\
-GET /?url=www.google.com&callback=http://www.myservice.com/screenshot/google\n\
-# Return an empty response immediately (HTTP 200 OK),\n\
-# then send a POST request to the callback URL when the screenshot is ready\n\
-# with the PNG image in the body.\n\
-</pre></body>\n");
+      return res.redirect('usage.html');
     }
     var url = utils.url(req.param('url'));
     var id = utils.md5(url + Date.now());
