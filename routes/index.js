@@ -7,7 +7,7 @@ var spawn = require('child_process').spawn;
 module.exports = function(app) {
   app.get('/', function(req, res, next) {
     if (!req.param('url', false)) {
-      return res.redirect('usage.html');
+      return res.redirect('/usage.html');
     }
     var url = utils.url(req.param('url'));
     var id = utils.md5(url + Date.now());
@@ -60,5 +60,10 @@ module.exports = function(app) {
         });
       });
     }
+  });
+
+  app.get('*', function(req, res, next) {
+    // for backwards compatibility, try redirecting to the main route if the request looks like /www.google.com
+    res.redirect('/?url=' + req.url.substring(1));
   });
 };
