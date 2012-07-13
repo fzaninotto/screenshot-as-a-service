@@ -8,34 +8,28 @@ module.exports = function(app) {
   /*
    * Usage
    */
-  app.get('/', function(req, res) {
-    res.send("\
+  app.get('/', function(req, res, next) {
+    if (!req.param('url', false)) {
+      return res.send("\
 <html><body><pre>\n\
 USAGE:\n\
 \n\
 # Take a screenshot\n\
-GET /www.google.com\n\
+GET /?url=www.google.com\n\
 # Return a 1024x600 PNG screenshot of the www.google.com homepage\n\
 \n\
 # Custom viewport size\n\
-GET /www.google.com?width=800&height=600\n\
+GET /?url=www.google.com&width=800&height=600\n\
 # Return a 800x600 PNG screenshot of the www.google.com homepage\n\
 \n\
 # Asynchronous call\n\
-GET /www.google.com?callback=http://www.myservice.com/screenshot/google\n\
+GET /?url=www.google.com&callback=http://www.myservice.com/screenshot/google\n\
 # Return an empty response immediately (HTTP 200 OK),\n\
 # then send a POST request to the callback URL when the screenshot is ready\n\
 # with the PNG image in the body.\n\
 </pre></body>\n");
-  });
-
-  /*
-   * GET screenshot.
-   */
-  app.get('/:url', function(req, res, next) {
-    if (req.param('url') == 'favicon.ico') return next();
+    }
     var url = utils.url(req.param('url'));
-    if (!url) return res.send(400);
     var id = utils.md5(url + Date.now());
     var filename = id + '.png';
     var rasterizerService = app.settings.rasterizerService;
@@ -76,8 +70,10 @@ GET /www.google.com?callback=http://www.myservice.com/screenshot/google\n\
       });
     } else {
       // synchronous
-      request.get(options, function(err) {
-        if (err) return next(err);
+      request.get(options, function(error, response, body) {
+        if (error || response.statusCode != 200) {
+          return next(new Error(body));
+        }
         console.log('screenshot - sending response');
         res.sendfile(path, function(err) {
           fs.unlink(path);
