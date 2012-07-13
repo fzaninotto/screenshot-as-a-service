@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Screenshot-as-a-service - Usage</title>
+</head>
+<body>
+<pre>
+USAGE:
+
+# Take a screenshot
+GET /?url=www.google.com
+# Return a 1024x600 PNG screenshot of the www.google.com homepage
+
+# Custom viewport size
+GET /?url=www.google.com&width=800&height=600
+# Return a 800x600 PNG screenshot of the www.google.com homepage
+
+# Disable JavaScript
+GET /?url=www.google.com&javascriptEnabled=false
+# Return a screenshot with no JavaScript executed
+
+# Custom User Agent
+GET /?url=www.google.com&userAgent=Mozilla%2F5.0+%28iPhone%3B+CPU+iPhone+OS+5_0+like+Mac+OS+X%29+AppleWebKit%2F534.46+%28KHTML%2C+like+Gecko%29+Version%2F5.1+Mobile%2F9A334+Safari%2F7534.48.3
+# Return a screenshot using an iPhone browser
+# (User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3)
+
+# Clipping Rectangle
+GET /?url=www.google.com&clipRect=%7B"top"%3A14%2C"left"%3A3%2C"width"%3A400%2C"height"%3A300%7D
+# Return a screenshot clipped at {"top":14,"left":3,"width":400,"height":300}
+
+# HTTP Authentication
+GET /?url=www.mysite.com&userName=johndoe&password=S3cr3t
+# Return a screenshot of a website requiring basic http authentication
+
+# Asynchronous call
+GET /?url=www.google.com&callback=http://www.myservice.com/screenshot/google
+# Return an empty response immediately (HTTP 200 OK),
+# then send a POST request to the callback URL when the screenshot is ready
+# with the PNG image in the body.
+
+# Use an HTML form to ask for a screenshot
+GET /form.html
+</pre>
+</body>
