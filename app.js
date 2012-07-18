@@ -10,8 +10,17 @@ var rastconfig = config.rasterizer;
 var rasterizerService = new RasterizerService(rastconfig);
 rasterizerService.startService();
 
+process.on('uncaughtException', function (err) {
+  console.error("[uncaughtException]", err);
+  process.exit(1);
+});
+
+process.on('SIGTERM', function () {
+  process.exit(0);
+});
+
 process.on('SIGINT', function () {
-  process.exit();
+  process.exit(0);
 });
 
 // web service
