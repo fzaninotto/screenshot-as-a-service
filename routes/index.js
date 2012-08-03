@@ -28,14 +28,14 @@ module.exports = function(app) {
 
     var id = 'saas_' + utils.md5(url) + "_" + utils.md5(JSON.stringify(options));
     var filename = id + '.png';
-    var path = join(rasterizerService.getPath(), filename);
+    var filepath = join(rasterizerService.getPath(), filename);
 
     options.headers.filename = filename;
 
 
     if (useCaching) {
-      if (path.existsSync(path)) {
-          res.sendfile(path, function(err) {
+      if (path.existsSync(filepath)) {
+          res.sendfile(filepath, function(err) {
             if (err) {
               res.statusCode = 500;
               res.end('Error getting screenshot');
@@ -59,10 +59,10 @@ module.exports = function(app) {
           return;
         }
         console.log('screenshot - streaming to %s', callback);
-        var fileStream = fs.createReadStream(path);
+        var fileStream = fs.createReadStream(filepath);
         fileStream.on('end', function() {
           if (!useCaching) {
-            fs.unlink(path);
+            fs.unlink(filepath);
           }
         });
         fileStream.on('error', function(err){
@@ -79,11 +79,11 @@ module.exports = function(app) {
           return next(new Error(body));
         }
 
-        console.log('screenshot - sending response ', path);
+        console.log('screenshot - sending response ', filepath);
 
-        res.sendfile(path, function(err) {
+        res.sendfile(filepath, function(err) {
           if (!useCaching) {
-            fs.unlink(path);
+            fs.unlink(filepath);
           }
           if (err) {
             res.statusCode = 500;
