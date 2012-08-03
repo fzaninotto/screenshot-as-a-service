@@ -40,7 +40,7 @@ module.exports = function(app) {
         }
       }
       catch(e) {
-
+        console.log("Error accessing cached file", path, e);
       }
     }
 
@@ -107,14 +107,10 @@ module.exports = function(app) {
 
 
 function cacheCleanup(cache) {
-  console.log("In cleanup", cache.path);
-
   var dir = cache.path;
 
   try {
     var files = fs.readdirSync(dir).filter(function(name) {
-      console.log(name, name.match(/\.png/));
-
       return !!name.match(/\.png/);
     }).map(function(v) {
       return {
