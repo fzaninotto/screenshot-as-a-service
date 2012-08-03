@@ -1,6 +1,7 @@
 var utils = require('../lib/utils');
 var join = require('path').join;
 var fs = require('fs');
+var path = require('path');
 var request = require('request');
 var spawn = require('child_process').spawn;
 
@@ -33,19 +34,14 @@ module.exports = function(app) {
 
 
     if (useCaching) {
-      try {
-        if (fs.lstatSync(path).isFile()) {
-            res.sendfile(path, function(err) {
-              if (err) {
-                res.statusCode = 500;
-                res.end('Error getting screenshot');
-              }
-            });
-            return;
-        }
-      }
-      catch(e) {
-        //console.log("Error accessing stats for cached file", path, e);
+      if (path.existsSync(path)) {
+          res.sendfile(path, function(err) {
+            if (err) {
+              res.statusCode = 500;
+              res.end('Error getting screenshot');
+            }
+          });
+          return;
       }
     }
 
