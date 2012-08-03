@@ -35,12 +35,17 @@ module.exports = function(app) {
     if (useCaching) {
       try {
         if (fs.lstatSync(path).isFile()) {
-            res.sendfile(path);
+            res.sendfile(path, function(err) {
+              if (err) {
+                res.statusCode = 500;
+                res.end('Error getting screenshot');
+              }
+            });
             return;
         }
       }
       catch(e) {
-        console.log("Error accessing cached file", path, e);
+        console.log("Error accessing stats for cached file", path, e);
       }
     }
 
