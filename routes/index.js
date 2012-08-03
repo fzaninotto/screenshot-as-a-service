@@ -25,7 +25,7 @@ module.exports = function(app) {
       if (req.param(name, false)) options.headers[name] = req.param(name);
     });
 
-    var id = utils.md5(url) + "_" + utils.md5(JSON.stringify(options));
+    var id = 'saas_' + utils.md5(url) + "_" + utils.md5(JSON.stringify(options));
     var filename = id + '.png';
     var path = join(rasterizerService.getPath(), filename);
 
@@ -45,7 +45,7 @@ module.exports = function(app) {
         }
       }
       catch(e) {
-        console.log("Error accessing stats for cached file", path, e);
+        //console.log("Error accessing stats for cached file", path, e);
       }
     }
 
@@ -113,10 +113,11 @@ module.exports = function(app) {
 
 function cacheCleanup(cache) {
   var dir = cache.path;
+  var maxAge = cache.maxAge;
 
   try {
     var files = fs.readdirSync(dir).filter(function(name) {
-      return !!name.match(/\.png/);
+      return !!name.match(/^saas_.*\.png/);
     }).map(function(v) {
       return {
         name: v,
