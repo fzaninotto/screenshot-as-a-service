@@ -3,6 +3,6 @@ rasterizer:
   port: 3001
   path: '/tmp/'
   viewport: '1024x600'
-  cache: true
+  cache: false
 server:
   port: 3000

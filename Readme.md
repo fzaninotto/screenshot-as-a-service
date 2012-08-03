@@ -73,6 +73,7 @@ rasterizer:
   port: 3001
   path: '/tmp/'
   viewport: '1024x600'
+  cache: false
 server:
   port: 3000
 ```
@@ -83,6 +84,8 @@ For instance, if you want to setup a proxy for phantomjs, create a `config/devel
 rasterizer:
   command: 'phantomjs --proxy=myproxy:1234'
 ```
+
+Setting cache=true will keep the files on the server, and return the same response given the same URL and options as described in usage.html.
 
 ## Asynchronous Usage Example
 
