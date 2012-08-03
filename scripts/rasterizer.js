@@ -6,7 +6,7 @@
  *
  * This starts an HTTP server waiting for screenshot requests
  */
-var basePath = phantom.args[0] || '/tmp/'; 
+var basePath = phantom.args[0] || '/tmp/';
 
 var port  = phantom.args[1] || 3001;
 
@@ -49,7 +49,7 @@ server = require('webserver').create();
  * All settings of the WebPage object can also be set using headers, e.g.:
  * javascriptEnabled: false
  * userAgent: Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+
- */ 
+ */
 service = server.listen(port, function(request, response) {
   if (request.url == '/healthCheck') {
     response.statusCode = 200;
@@ -57,9 +57,9 @@ service = server.listen(port, function(request, response) {
     response.close();
     return;
   }
-  if (!request.headers.url) {
+  if (!request.headers.url || !request.headers.filename) {
     response.statusCode = 400;
-    response.write('Error: Request must contain an url header' + "\n");
+    response.write('Error: Request must contain url and filename header' + "\n");
     response.close();
     return;
   }

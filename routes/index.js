@@ -10,18 +10,36 @@ module.exports = function(app) {
       return res.redirect('/usage.html');
     }
     var url = utils.url(req.param('url'));
-    var id = utils.md5(url + Date.now());
-    var filename = id + '.png';
     var rasterizerService = app.settings.rasterizerService;
-    var path = join(rasterizerService.getPath(), filename);
+    var useCaching = rasterizerService.getCache();
+
     // required options
     var options = {
       uri: 'http://localhost:' + rasterizerService.getPort() + '/',
-      headers: { url: url, filename: filename }
+      headers: { url: url }
     };
     ['width', 'height', 'clipRect', 'javascriptEnabled', 'loadImages', 'localToRemoteUrlAccessEnabled', 'userAgent', 'userName', 'password'].forEach(function(name) {
       if (req.param(name, false)) options.headers[name] = req.param(name);
     });
+
+    var id = utils.md5(url) + "_" + utils.md5(JSON.stringify(options));
+    var filename = id + '.png';
+    var path = join(rasterizerService.getPath(), filename);
+
+    options.headers.filename = filename;
+
+
+    if (useCaching) {
+      try {
+        if (fs.lstatSync(path).isFile()) {
+            res.sendfile(path);
+            return;
+        }
+      }
+      catch(e) {
+
+      }
+    }
 
     console.log('screenshot - rasterizing %s', url);
 
@@ -39,7 +57,9 @@ module.exports = function(app) {
         console.log('screenshot - streaming to %s', callback);
         var fileStream = fs.createReadStream(path);
         fileStream.on('end', function() {
-          fs.unlink(path);
+          if (!useCaching) {
+            fs.unlink(path);
+          }
         });
         fileStream.on('error', function(err){
           console.log('Error handled in file reader: %s', err.message);
@@ -54,9 +74,13 @@ module.exports = function(app) {
         if (error || response.statusCode != 200) {
           return next(new Error(body));
         }
-        console.log('screenshot - sending response');
+
+        console.log('screenshot - sending response ', path);
+
         res.sendfile(path, function(err) {
-          fs.unlink(path);
+          if (!useCaching) {
+            fs.unlink(path);
+          }
         });
       });
     }
