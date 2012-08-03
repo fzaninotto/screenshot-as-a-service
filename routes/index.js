@@ -11,7 +11,8 @@ module.exports = function(app) {
     }
     var url = utils.url(req.param('url'));
     var rasterizerService = app.settings.rasterizerService;
-    var useCaching = rasterizerService.getCache();
+    var cache = rasterizerService.getCache();
+    var useCaching = cache.active;
 
     // required options
     var options = {
@@ -80,6 +81,10 @@ module.exports = function(app) {
         res.sendfile(path, function(err) {
           if (!useCaching) {
             fs.unlink(path);
+          }
+          if (err) {
+            res.statusCode = 500;
+            res.end('Error getting file');
           }
         });
       });
