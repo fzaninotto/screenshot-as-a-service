@@ -6,5 +6,8 @@ rasterizer:
   cache:
     active: true
     path: '/tmp/cache/'
+    cleanup: false
+    cleanupInterval: 60000
+    maxItems: 100
 server:
   port: 3000

@@ -5,14 +5,16 @@ var request = require('request');
 var spawn = require('child_process').spawn;
 
 module.exports = function(app) {
+
+  var rasterizerService = app.settings.rasterizerService;
+  var cache = rasterizerService.getCache();
+  var useCaching = cache.active;
+
   app.get('/', function(req, res, next) {
     if (!req.param('url', false)) {
       return res.redirect('/usage.html');
     }
     var url = utils.url(req.param('url'));
-    var rasterizerService = app.settings.rasterizerService;
-    var cache = rasterizerService.getCache();
-    var useCaching = cache.active;
 
     // required options
     var options = {
@@ -84,7 +86,7 @@ module.exports = function(app) {
           }
           if (err) {
             res.statusCode = 500;
-            res.end('Error getting file');
+            res.end('Error getting screenshot');
           }
         });
       });
@@ -95,4 +97,48 @@ module.exports = function(app) {
     // for backwards compatibility, try redirecting to the main route if the request looks like /www.google.com
     res.redirect('/?url=' + req.url.substring(1));
   });
+
+
+  if (useCaching && cache.cleanup) {
+    console.log("Initializing cache cleanup", "Interval: ", cache.cleanupInterval);
+    cacheCleanup(cache);
+  }
 };
+
+
+function cacheCleanup(cache) {
+  console.log("In cleanup", cache.path);
+
+  var dir = cache.path;
+
+  try {
+    var files = fs.readdirSync(dir).filter(function(name) {
+      console.log(name, name.match(/\.png/));
+
+      return !!name.match(/\.png/);
+    }).map(function(v) {
+      return {
+        name: v,
+        time: fs.statSync(dir + v).mtime.getTime()
+      };
+    })
+    .sort(function(a, b) { return a.time - b.time; });
+
+    var deleteNum = files.length - cache.maxItems;
+    var filesToDelete = (deleteNum > 0) ? files.slice(0, deleteNum) : [];
+
+    if (filesToDelete.length > 0) {
+
+      console.log("Found " + filesToDelete.length + " files to delete.", filesToDelete);
+
+      filesToDelete.forEach(function(f) {
+        fs.unlinkSync(dir + f.name);
+      });
+    }
+  }
+  catch(e) {
+    console.log("Error in cache cleanup", e);
+  }
+
+  //setTimeout(cacheCleanup, Math.max(10, cache.cleanupInterval), cache);
+}
