@@ -4,11 +4,11 @@ rasterizer:
   path: '/tmp/'
   viewport: '1024x600'
   cache:
-    active: false
+    active: true
     path: '/tmp/cache/'
     cleanup: true
     cleanupInterval: 5000
     maxItems: 100
-    maxAge: 5000
+    maxAge: 20000
 server:
   port: 3000

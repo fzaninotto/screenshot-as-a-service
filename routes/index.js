@@ -15,6 +15,7 @@ module.exports = function(app) {
       return res.redirect('/usage.html');
     }
     var url = utils.url(req.param('url'));
+    var useCallback = req.param('callback', false);
 
     // required options
     var options = {
@@ -32,7 +33,7 @@ module.exports = function(app) {
     options.headers.filename = filename;
 
 
-    if (useCaching) {
+    if (useCaching && !useCallback) {
       if (fs.existsSync(filepath)) {
           res.sendfile(filepath, function(err) {
             if (err) {
@@ -46,7 +47,7 @@ module.exports = function(app) {
 
     console.log('screenshot - rasterizing %s', url);
 
-    if (req.param('callback', false)) {
+    if (useCallback) {
       // asynchronous
       var callback = utils.url(req.param('callback'));
       res.send('Will post screenshot of ' + url + ' to ' + callback + ' when processed');
