@@ -73,6 +73,13 @@ rasterizer:
   port: 3001
   path: '/tmp/'
   viewport: '1024x600'
+  cache:
+    active: true
+    path: '/tmp/cache/'
+    cleanup: true
+    cleanupInterval: 5000
+    maxItems: 100
+    maxAge: 20000
 server:
   port: 3000
 ```
@@ -83,6 +90,8 @@ For instance, if you want to setup a proxy for phantomjs, create a `config/devel
 rasterizer:
   command: 'phantomjs --proxy=myproxy:1234'
 ```
+
+Setting cache active=true will keep the files on the server, and return the same response given the same URL and options as described in usage.html.
 
 ## Asynchronous Usage Example
 

@@ -3,5 +3,12 @@ rasterizer:
   port: 3001
   path: '/tmp/'
   viewport: '1024x600'
+  cache:
+    active: true
+    path: '/tmp/cache/'
+    cleanup: true
+    cleanupInterval: 5000
+    maxItems: 100
+    maxAge: 20000
 server:
   port: 3000
