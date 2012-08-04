@@ -63,18 +63,22 @@ GET /?url=www.google.com&callback=http://www.myservice.com/screenshot/google
 GET /form.html
 ```
 
+Screenshots are cached for one minute, so that frequent requests for the same screenshot don't slow the service down. You can adjust or disable caching in the project configuration (see below).
+
 ## Configuration
 
 Create a `config/development.yaml` or a `config/production.yaml` to override any of the settings found in the `config/default.yaml`:
 
 ```yml
 rasterizer:
-  command: phantomjs
-  port: 3001
-  path: '/tmp/'
-  viewport: '1024x600'
+  command: phantomjs   # phantomjs executable
+  port: 3001           # internal service port. No need to allow inbound or outbound access to this port
+  path: '/tmp/'        # where the screenshot files are stored
+  viewport: '1024x600' # browser window size. Height frows according to the content
+cache:
+  lifetime: 60000      # one minute, set to 0 for no cache
 server:
-  port: 3000
+  port: 3000           # main service port
 ```
 
 For instance, if you want to setup a proxy for phantomjs, create a `config/development.yaml` as follows:
