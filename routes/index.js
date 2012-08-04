@@ -1,7 +1,6 @@
 var utils = require('../lib/utils');
 var join = require('path').join;
 var fs = require('fs');
-var path = require('path');
 var request = require('request');
 var spawn = require('child_process').spawn;
 
@@ -34,7 +33,7 @@ module.exports = function(app) {
 
 
     if (useCaching) {
-      if (path.existsSync(filepath)) {
+      if (fs.existsSync(filepath)) {
           res.sendfile(filepath, function(err) {
             if (err) {
               res.statusCode = 500;
@@ -108,10 +107,14 @@ module.exports = function(app) {
 
 
 function cacheCleanup(cache) {
+
   var dir = cache.path;
   var maxAge = cache.maxAge;
+  var now = new Date().getTime();
 
   try {
+
+    // Get all files for possible cleanup, and sort them oldest first.
     var files = fs.readdirSync(dir).filter(function(name) {
       return !!name.match(/^saas_.*\.png/);
     }).map(function(v) {
@@ -119,24 +122,25 @@ function cacheCleanup(cache) {
         name: v,
         time: fs.statSync(dir + v).mtime.getTime()
       };
-    })
-    .sort(function(a, b) { return a.time - b.time; });
+    }).sort(function(a, b) { return a.time - b.time; });
 
-    var deleteNum = files.length - cache.maxItems;
-    var filesToDelete = (deleteNum > 0) ? files.slice(0, deleteNum) : [];
+    // Remove all files that are too old or that are over the max number allowed.
+    for (var i = 0; i < files.length; i++) {
 
-    if (filesToDelete.length > 0) {
+      var tooOld = now - files[i].time > maxAge;
+      var tooMany = files.length - i > cache.maxItems;
 
-      console.log("Found " + filesToDelete.length + " files to delete.", filesToDelete);
-
-      filesToDelete.forEach(function(f) {
-        fs.unlinkSync(dir + f.name);
-      });
+      if (tooOld || tooMany) {
+        fs.unlinkSync(dir + files[i].name);
+      }
+      else {
+        break;
+      }
     }
   }
   catch(e) {
     console.log("Error in cache cleanup", e);
   }
 
-  //setTimeout(cacheCleanup, Math.max(10, cache.cleanupInterval), cache);
+  setTimeout(cacheCleanup, Math.max(10, cache.cleanupInterval), cache);
 }
