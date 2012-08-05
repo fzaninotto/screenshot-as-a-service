@@ -4,11 +4,7 @@
 var config = require('config');
 var express = require('express');
 var RasterizerService = require('./lib/rasterizerService');
-
-// rasterizer
-var rastconfig = config.rasterizer;
-var rasterizerService = new RasterizerService(rastconfig);
-rasterizerService.startService();
+var FileCleanerService = require('./lib/fileCleanerService');
 
 process.on('uncaughtException', function (err) {
   console.error("[uncaughtException]", err);
@@ -28,7 +24,8 @@ var app = express.createServer();
 app.configure(function(){
   app.use(express.static(__dirname + '/public'))
   app.use(app.router);
-  app.set('rasterizerService', rasterizerService);
+  app.set('rasterizerService', new RasterizerService(config.rasterizer).startService());
+  app.set('fileCleanerService', new FileCleanerService(config.cache.lifetime));
 });
 app.configure('development', function() {
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
