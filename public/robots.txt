@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /usage.html
+Allow: /form.html
+Disallow: /
