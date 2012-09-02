@@ -19,14 +19,14 @@
   <div class="row-fluid">
   <form action="../" method="GET" class="well form-inline">
     <fieldset>
-      
+
     <div class="control-group">
       <div class="controls">
         <input type="text" name="url" class="span12" required="required" placeholder="Url"/>
         <span class="help-block">with or without the http:// prefix</span>
       </div>
     </div>
-    
+
     <div class="control-group">
       <div class="controls">
         <input type="text" name="width" class="span3" style="display: initial" placeholder="Width"/>
@@ -34,14 +34,14 @@
         <span class="help-inline">in pixels</span>
       </div>
     </div>
-    
+
     <div class="control-group">
       <div class="controls">
         <input type="text" name="clipRect" class="span6" placeholder="clipRect (JSON)"/>
         <span class="help-inline">e.g. {"top":14,"left":3,"width":400,"height":300}</span>
       </div>
     </div>
-    
+
     <div class="control-group">
       <div class="controls">
         <label class="checkbox inline" for="javascriptEnabled">
@@ -74,11 +74,16 @@
         <input type="text" name="callback" class="span12" placeholder="Callback Url"/>
       </div>
     </div>
-    
+
+    <div class="control-group">
+      <div class="controls">
+        <input type="text" name="delay" class="span2" style="display: initial" placeholder="Delay in miliseconds"/>
+    </div>
+
     <div class="form-actions">
       <button type="submit" class="btn btn-primary">Submit</button>
     </div>
-    
+
     </fieldset>
   </form>
   </div>
