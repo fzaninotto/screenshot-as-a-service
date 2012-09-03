@@ -39,6 +39,11 @@ GET /?url=www.google.com&callback=http://www.myservice.com/screenshot/google
 # then send a POST request to the callback URL when the screenshot is ready
 # with the PNG image in the body.
 
+# Screenshot delay
+GET /?url=www.google.com&delay=1000
+# Return a 1024x600 PNG screenshot of the www.google.com homepage
+# 1 second after it's loaded
+
 # Use an HTML form to ask for a screenshot
 GET /form.html
 </pre>
