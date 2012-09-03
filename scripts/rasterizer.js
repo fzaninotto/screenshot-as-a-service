@@ -66,7 +66,7 @@ service = server.listen(port, function(request, response) {
   var url = request.headers.url;
   var path = basePath + (request.headers.filename || (url.replace(new RegExp('https?://'), '').replace(/\//g, '.') + '.png'));
   var page = new WebPage();
-  var delay = ~~request.headers.delay || 0;
+  var delay = request.headers.delay || 0;
   try {
     page.viewportSize = {
       width: request.headers.width || defaultViewportSize.width,
