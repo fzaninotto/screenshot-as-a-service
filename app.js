@@ -3,6 +3,7 @@
  */
 var config = require('config');
 var express = require('express');
+var exists = require('fs').exists || require('path').exists;
 var RasterizerService = require('./lib/rasterizerService');
 var FileCleanerService = require('./lib/fileCleanerService');
 
@@ -31,5 +32,13 @@ app.configure('development', function() {
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 });
 require('./routes')(app);
+
+// load plugins
+exists('./plugins/index.js', function(flag) {
+  if (flag) {
+    require('./plugins').init(app, config);
+  };
+});
+
 app.listen(config.server.port);
 console.log('Express server listening on port ' + config.server.port);
