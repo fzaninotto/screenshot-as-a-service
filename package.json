@@ -8,6 +8,7 @@
   "dependencies": {
     "express": "2.5.8",
     "config": "0.4.15",
-    "request": "2.9.153"
+    "request": "2.9.153",
+    "knox": "~0.4.4"
   }
 }

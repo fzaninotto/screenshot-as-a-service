@@ -7,6 +7,7 @@ var request = require('request');
 module.exports = function(app) {
   var rasterizerService = app.settings.rasterizerService;
   var fileCleanerService = app.settings.fileCleanerService;
+  var s3Service = app.settings.s3Service;
 
   // routes
   app.get('/', function(req, res, next) {
@@ -20,24 +21,24 @@ module.exports = function(app) {
       uri: 'http://localhost:' + rasterizerService.getPort() + '/',
       headers: { url: url }
     };
-    ['width', 'height', 'clipRect', 'javascriptEnabled', 'loadImages', 'localToRemoteUrlAccessEnabled', 'userAgent', 'userName', 'password', 'delay'].forEach(function(name) {
+
+    // define the GET vars that we will parse
+    var allowedGETvars = ['width', 'height', 'clipRect', 'javascriptEnabled', 'loadImages',
+      'localToRemoteUrlAccessEnabled', 'userAgent', 'userName', 'password', 'callback',
+      'delay', 's3', 's3bucket'];
+
+    allowedGETvars.forEach(function(name) {
       if (req.param(name, false)) options.headers[name] = req.param(name);
     });
 
     var filename = 'screenshot_' + utils.md5(url + JSON.stringify(options)) + '.png';
     options.headers.filename = filename;
+    options.headers.filePath = join(rasterizerService.getPath(), filename);
+    options.headers.callbackUrl = options.headers.callback ? utils.url(options.headers.callback) : false;
 
-    var filePath = join(rasterizerService.getPath(), filename);
+    processImage(res, options,
+      function(err) { if (err) next(err); });
 
-    var callbackUrl = req.param('callback', false) ? utils.url(req.param('callback')) : false;
-
-    if (path.existsSync(filePath)) {
-      console.log('Request for %s - Found in cache', url);
-      processImageUsingCache(filePath, res, callbackUrl, function(err) { if (err) next(err); });
-      return;
-    }
-    console.log('Request for %s - Rasterizing it', url);
-    processImageUsingRasterizer(options, filePath, res, callbackUrl, function(err) { if(err) next(err); });
   });
 
   app.get('*', function(req, res, next) {
@@ -46,33 +47,43 @@ module.exports = function(app) {
   });
 
   // bits of logic
-  var processImageUsingCache = function(filePath, res, url, callback) {
-    if (url) {
-      // asynchronous
-      res.send('Will post screenshot to ' + url + ' when processed');
-      postImageToUrl(filePath, url, callback);
-    } else {
-      // synchronous
-      sendImageInResponse(filePath, res, callback);
-    }
-  }
+  var processImage = function(res, options, callback) {
+    options.headers.callbackUrl = options.headers.callbackUrl;
 
-  var processImageUsingRasterizer = function(rasterizerOptions, filePath, res, url, callback) {
-    if (url) {
+    // define the method to be used after rasterizer service finishes
+    // or generally the screenshot asset is ready to be served
+    // by default we send the image as a response back to the client
+    var method = sendImageInResponse;
+
+    // check if reply is with a url callback
+    if (options.headers.callbackUrl) {
       // asynchronous
-      res.send('Will post screenshot to ' + url + ' when processed');
-      callRasterizer(rasterizerOptions, function(error) {
-        if (error) return callback(error);
-        postImageToUrl(filePath, url, callback);
-      });
-    } else {
-      // synchronous
-      callRasterizer(rasterizerOptions, function(error) {
-        if (error) return callback(error);
-        sendImageInResponse(filePath, res, callback);
-      });
+      res.send('Will post screenshot to ' + options.headers.callbackUrl + ' when processed');
+      method = postImageToUrl;
     }
-  }
+
+    // check if we'll save the screenshot to a S3 bucket
+    if (options.headers.s3) {
+      // upload asset to s3
+      method = postImagetoS3;
+    }
+
+    // check if file is already there
+    if (path.existsSync(options.headers.filePath)) {
+      console.log('Request for %s - Found in cache', options.headers.url);
+      method(options, res, callback);
+      return;
+    }
+
+    console.log('Request for %s - Rasterizing it', options.headers.url);
+
+    callRasterizer(options, function(error) {
+        if (error) return callback(error);
+        method(options, res, callback);
+    });
+
+
+  };
 
   var callRasterizer = function(rasterizerOptions, callback) {
     request.get(rasterizerOptions, function(error, response, body) {
@@ -83,30 +94,39 @@ module.exports = function(app) {
       }
       callback(null);
     });
-  }
+  };
 
-  var postImageToUrl = function(imagePath, url, callback) {
-    console.log('Streaming image to %s', url);
-    var fileStream = fs.createReadStream(imagePath);
+  var postImagetoS3 = function(options, res, callback){
+    console.log('Uploading image to S3');
+    s3Service.send(options, res, function(err, s3Obj) {
+      fileCleanerService.addFile(options.headers.filePath);
+      res.send(s3Obj);
+      callback(err);
+    });
+  };
+
+  var postImageToUrl = function(options, res, callback) {
+    console.log('Streaming image to %s', options.headers.callbackUrl);
+    var fileStream = fs.createReadStream(options.headers.filePath);
     fileStream.on('end', function() {
-      fileCleanerService.addFile(imagePath);
+      fileCleanerService.addFile(options.headers.filePath);
     });
     fileStream.on('error', function(err){
       console.log('Error while reading file: %s', err.message);
       callback(err);
     });
-    fileStream.pipe(request.post(url, function(err) {
+    fileStream.pipe(request.post(options.headers.callbackUrl, function(err) {
       if (err) console.log('Error while streaming screenshot: %s', err);
       callback(err);
     }));
-  }
+  };
 
-  var sendImageInResponse = function(imagePath, res, callback) {
+  var sendImageInResponse = function(options, res, callback) {
     console.log('Sending image in response');
-    res.sendfile(imagePath, function(err) {
-      fileCleanerService.addFile(imagePath);
+    res.sendfile(options.headers.filePath, function(err) {
+      fileCleanerService.addFile(options.headers.filePath);
       callback(err);
     });
-  }
+  };
 
 };
