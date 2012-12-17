@@ -7,3 +7,11 @@ cache:
   lifetime: 60000      # one minute, set to 0 for no cache
 server:
   port: 3000           # main service port
+s3:
+  bucketOne:
+    bucket: 'Your bucket name'
+    accessKey: 'Your local S3 key (AWS_KEY)'
+    secretKey: 'Your local secret S3 key (AWS_SECRET_KEY)'
+    path: '/'          # path to save the uploaded assets - always use slash at end
+  # You can define multiple buckets and reference them using the 's3bucket' GET param
+

@@ -59,6 +59,16 @@ GET /?url=www.google.com&callback=http://www.myservice.com/screenshot/google
 # then send a POST request to the callback URL when the screenshot is ready
 # with the PNG image in the body.
 
+# Save to S3
+GET /?url=www.google.com&s3=true&s3bucket=bucketOne
+# Save the output on as S3 bucket.
+# Define on which S3 bucket asset will be saved (from config id see configuration)
+# If s3bucket is not defined or not found, the first one will be used
+# A JSON string is returned containing the following keys / value-types
+#   status: boolean    // status of S3 operation
+#   url: string        // the complete url where the asset can be accessed from
+#   err: string|object // The error message
+
 # Screenshot delay
 GET /?url=www.google.com&delay=1000
 # Return a 1024x600 PNG screenshot of the www.google.com homepage
@@ -84,6 +94,13 @@ cache:
   lifetime: 60000      # one minute, set to 0 for no cache
 server:
   port: 3000           # main service port
+s3:
+  bucketOne:
+    bucket: 'Your bucket name'
+    accessKey: 'Your local S3 key (AWS_KEY)'
+    secretKey: 'Your local secret S3 key (AWS_SECRET_KEY)'
+    path: '/'          # path to save the uploaded assets - always use slash at end
+  # You can define multiple buckets and reference them using the 's3bucket' GET param
 ```
 
 For instance, if you want to setup a proxy for phantomjs, create a `config/development.yaml` as follows:
