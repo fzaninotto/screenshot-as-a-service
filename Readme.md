@@ -1,5 +1,3 @@
-# Screenshot as a Service
-
 A simple screenshot web service powered by [Express](http://expressjs.com) and [PhantomJS](http://www.phantomjs.org/). Forked from [screenshot-app](http://github.com/visionmedia/screenshot-app).
 
 ## Setup
@@ -48,6 +46,9 @@ GET /?url=www.google.com&userAgent=Mozilla%2F5.0+%28iPhone%3B+CPU+iPhone+OS+5_0+
 # Clipping Rectangle
 GET /?url=www.google.com&clipRect=%7B"top"%3A14%2C"left"%3A3%2C"width"%3A400%2C"height"%3A300%7D
 # Return a screenshot clipped at {"top":14,"left":3,"width":400,"height":300}
+# Alternate syntax:
+GET /?url=www.google.com&clip=true&clipTop=14&clipLeft=3&clipWidth=400&clipHeight=300
+
 
 # HTTP Authentication
 GET /?url=www.mysite.com&userName=johndoe&password=S3cr3t
@@ -161,3 +162,6 @@ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
 CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+=======
+http://localhost:3000/?url=http%3A%2F%2Fslashdot.org&width=1280&height=1024&clip=true&clipTop=0&clipLeft=0&clipWidth=200&clipHeight=300&javascriptEnabled=true&loadImages=true&userAgent=&userName=&password=&callback=&delay=&s3=true&s3bucket=bucketTwo
+>>>>>>> 0fd8a61... Added alternative way to request a clipRect
