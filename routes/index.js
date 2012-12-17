@@ -24,6 +24,17 @@ module.exports = function(app) {
       if (req.param(name, false)) options.headers[name] = req.param(name);
     });
 
+    // check for alternate syntax for clip rectangle
+    if (req.param('clip', false)) {
+      options.headers.clipRect = JSON.stringify({
+        top: req.param('clipTop'),
+        left: req.param('clipLeft'),
+        width: req.param('clipWidth'),
+        height: req.param('clipHeight')
+      });
+
+    }
+
     var filename = 'screenshot_' + utils.md5(url + JSON.stringify(options)) + '.png';
     options.headers.filename = filename;
 
@@ -75,9 +86,14 @@ module.exports = function(app) {
   }
 
   var callRasterizer = function(rasterizerOptions, callback) {
+    console.log(rasterizerOptions);
     request.get(rasterizerOptions, function(error, response, body) {
       if (error || response.statusCode != 200) {
-        console.log('Error while requesting the rasterizer: %s', error.message);
+        if (error && error.message) {
+          console.log('Error while requesting the rasterizer: %s', error.message);
+        } else {
+          console.log('Error while requesting the rasterizer, statusCode: %s', response.statusCode);
+        }
         rasterizerService.restartService();
         return callback(new Error(body));
       }
