@@ -3,10 +3,10 @@
   "description": "Website screenshot service powered by node.js and phantomjs",
   "version": "1.1.0",
   "engines": {
-    "node": ">=0.6.15"
+    "node": ">=0.8.4"
   },
   "dependencies": {
-    "express": "2.5.8",
+    "express": "3.x",
     "config": "0.4.15",
     "request": "2.9.153"
   }

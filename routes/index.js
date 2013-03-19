@@ -31,7 +31,7 @@ module.exports = function(app) {
 
     var callbackUrl = req.param('callback', false) ? utils.url(req.param('callback')) : false;
 
-    if (path.existsSync(filePath)) {
+    if (fs.existsSync(filePath)) {
       console.log('Request for %s - Found in cache', url);
       processImageUsingCache(filePath, res, callbackUrl, function(err) { if (err) next(err); });
       return;
