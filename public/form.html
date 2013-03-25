@@ -44,17 +44,26 @@
     
     <div class="control-group">
       <div class="controls">
-        <label class="checkbox inline" for="javascriptEnabled">
-          <input type="checkbox" checked="checked" name="javascriptEnabled" value="true"/>Enable JavaScript
+        <label class="checkbox inline" for="javascriptEnabledDummy">
+          <input type="checkbox" checked="checked" id="javascriptEnabledDummy" onclick="toggle(this, 'javascriptEnabled');"/>Enable JavaScript
+          <input type="hidden" id="javascriptEnabled" name="javascriptEnabled" value="true" />
         </label>
-        <label class="checkbox inline" for="loadImages">
-          <input type="checkbox" checked="checked" name="loadImages" value="true"/>Load Images
+        <label class="checkbox inline" for="loadImagesDummy">
+          <input type="checkbox" checked="checked" id="loadImagesDummy" onclick="toggle(this, 'loadImages');"/>Load Images
+          <input type="hidden" id="loadImages" name="loadImages" value="true" />
         </label>
-        <label class="checkbox inline" for="localToRemoteUrlAccessEnabled">
-          <input type="checkbox" name="localToRemoteUrlAccessEnabled" value="true"/>Enable Local To Remote Url Access
+        <label class="checkbox inline" for="localToRemoteUrlAccessEnabledDummy">
+          <input type="checkbox" id="localToRemoteUrlAccessEnabledDummy"  onclick="toggle(this, 'localToRemoteUrlAccessEnabled');"/>Enable Local To Remote Url Access
+          <input type="hidden" id="localToRemoteUrlAccessEnabled" name="localToRemoteUrlAccessEnabled" value="false" />
         </label>
       </div>
     </div>
+
+    <script>
+    function toggle(val, target) {
+      document.getElementById(target).value = val.checked;
+    }
+    </script>
 
     <div class="control-group">
       <div class="controls">
