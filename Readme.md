@@ -77,6 +77,7 @@ Create a `config/development.yaml` or a `config/production.yaml` to override any
 ```yml
 rasterizer:
   command: phantomjs   # phantomjs executable
+  args: ''             # additional phantomjs arguments
   port: 3001           # internal service port. No need to allow inbound or outbound access to this port
   path: '/tmp/'        # where the screenshot files are stored
   viewport: '1024x600' # browser window size. Height frows according to the content
@@ -90,7 +91,7 @@ For instance, if you want to setup a proxy for phantomjs, create a `config/devel
 
 ```yml
 rasterizer:
-  command: 'phantomjs --proxy=myproxy:1234'
+   args: '--proxy=myproxy:1234'
 ```
 
 ## Asynchronous Usage Example
