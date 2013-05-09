@@ -22,7 +22,7 @@ Express server listening on port 3000
 For a quick test with the command line, type:
 
 ```sh
-$ curl http://localhost:3000/www.google.com > google.png
+$ curl http://localhost:3000/?url=www.google.com > google.png
 ```
 
 Here is the complete usage documentation, also accessible on `/usage.html`:
