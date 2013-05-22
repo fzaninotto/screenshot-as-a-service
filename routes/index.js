@@ -4,7 +4,7 @@ var fs = require('fs');
 var path = require('path');
 var request = require('request');
 
-module.exports = function(app) {
+module.exports = function(app, useCors) {
   var rasterizerService = app.settings.rasterizerService;
   var fileCleanerService = app.settings.fileCleanerService;
 
@@ -103,6 +103,10 @@ module.exports = function(app) {
 
   var sendImageInResponse = function(imagePath, res, callback) {
     console.log('Sending image in response');
+    if (useCors) {
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      res.setHeader("Access-Control-Expose-Headers", "Content-Type");
+    }
     res.sendfile(imagePath, function(err) {
       fileCleanerService.addFile(imagePath);
       callback(err);
