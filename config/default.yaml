@@ -7,3 +7,4 @@ cache:
   lifetime: 60000      # one minute, set to 0 for no cache
 server:
   port: 3000           # main service port
+  useCors: false       # enable CORS support
