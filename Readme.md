@@ -84,6 +84,15 @@ GET /?url=www.google.com&delay=1000
 # Return a 1024x600 PNG screenshot of the www.google.com homepage
 # 1 second after it's loaded
 
+# Evented screenshot delay
+GET /?url=www.modernizr.com&readyExpression=$("html").hasClass("js")
+# Return a 1024x600 PNG screenshot of the www.google.com homepage
+# when 'html' tag receives class 'js'. The 'readyExpression' gets evaluated
+# repeatedly in the page context, the screenshot gets taken once it evaluates
+# to true. There is a timeout of 5 seconds after which the screenshot is
+# taken regardless.
+
+
 # Use an HTML form to ask for a screenshot
 GET /form.html
 ```

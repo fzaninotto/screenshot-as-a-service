@@ -67,6 +67,7 @@ service = server.listen(port, function(request, response) {
   var path = basePath + (request.headers.filename || (url.replace(new RegExp('https?://'), '').replace(/\//g, '.') + '.png'));
   var page = new WebPage();
   var delay = request.headers.delay || 0;
+  var readyExpression = request.headers.readyExpression;
   try {
     page.viewportSize = {
       width: request.headers.width || defaultViewportSize.width,
@@ -86,14 +87,34 @@ service = server.listen(port, function(request, response) {
     response.write('Error while parsing headers: ' + err.message);
     return response.close();
   }
+
   page.open(url, function(status) {
+
+    var onReady = function () {
+      page.render(path);
+      response.write('Success: Screenshot saved to ' + path + "\n");
+      page.release();
+      response.close();
+    };
+
+    var watchdog = 50;
+    var waitForReady = function () {
+      var isReady = page.evaluate(function (expression) {
+        return eval(expression);
+      }, readyExpression);
+      if (isReady || --watchdog <= 0) {
+        onReady();
+      } else {
+        setTimeout(waitForReady, 100);
+      }
+    };
+
     if (status == 'success') {
-      window.setTimeout(function () {
-        page.render(path);
-        response.write('Success: Screenshot saved to ' + path + "\n");
-        page.release();
-        response.close();
-      }, delay);
+      if (readyExpression) {
+        waitForReady();
+      } else {
+        window.setTimeout(onReady, delay);
+      }
     } else {
       response.write('Error: Url returned status ' + status + "\n");
       page.release();
