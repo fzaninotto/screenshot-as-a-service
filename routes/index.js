@@ -4,6 +4,12 @@ var fs = require('fs');
 var path = require('path');
 var request = require('request');
 
+var availableOptions = [
+  'width', 'height', 'clipRect', 'javascriptEnabled', 'loadImages',
+  'localToRemoteUrlAccessEnabled', 'userAgent', 'userName', 'password',
+  'delay', 'readyExpression'
+];
+
 module.exports = function(app, useCors) {
   var rasterizerService = app.settings.rasterizerService;
   var fileCleanerService = app.settings.fileCleanerService;
@@ -20,7 +26,7 @@ module.exports = function(app, useCors) {
       uri: 'http://localhost:' + rasterizerService.getPort() + '/',
       headers: { url: url }
     };
-    ['width', 'height', 'clipRect', 'javascriptEnabled', 'loadImages', 'localToRemoteUrlAccessEnabled', 'userAgent', 'userName', 'password', 'delay'].forEach(function(name) {
+    availableOptions.forEach(function(name) {
       if (req.param(name, false)) options.headers[name] = req.param(name);
     });
 
