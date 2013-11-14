@@ -106,7 +106,6 @@ service = server.listen(port, function(request, response) {
     var onReady = function () {
       if (page.cacheHeaders) {
         page.cacheHeaders.forEach(function (header) {
-          console.log(header.name + ':' + header.value);
           response.setHeader(header.name, header.value);
         });
       }
