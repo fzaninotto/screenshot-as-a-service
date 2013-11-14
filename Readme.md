@@ -86,18 +86,31 @@ GET /?url=www.google.com&delay=1000
 
 # Evented screenshot delay
 GET /?url=www.modernizr.com&readyExpression=$("html").hasClass("js")
-# Return a 1024x600 PNG screenshot of the www.google.com homepage
+# Return a 1024x600 PNG screenshot of the www.modernizr.com homepage
 # when 'html' tag receives class 'js'. The 'readyExpression' gets evaluated
 # repeatedly in the page context, the screenshot gets taken once it evaluates
 # to true. There is a timeout of 5 seconds after which the screenshot is
 # taken regardless.
 
-
 # Use an HTML form to ask for a screenshot
 GET /form.html
+
+# Forwarding cache headers
+GET /?url=www.modernizr.com&forwardCacheHeaders=true
+# Return a 1024x600 PNG screenshot of the www.modernizr.com homepage
+# and set caching-related headers of the screenshot's HTTP response to match
+# those of the original page HTTP response. Headers affected are
+# 'cache-control', 'expires', 'etag', 'vary' and 'pragma'.
+# Cache header forwarding only works when a screenshot is rasterized, not
+# when the screenshot is retrieved from the internal file cached (see below).
 ```
 
-Screenshots are cached for one minute, so that frequent requests for the same screenshot don't slow the service down. You can adjust or disable caching in the project configuration (see below).
+## Internal file cache
+
+Screenshots can be cached, so that frequent requests for the same screenshot
+don't slow the service down. When a cached screenshot is served, the
+'forwardCacheHeaders' option does not work. File cache is disabled by
+default.
 
 ## Configuration
 
@@ -110,7 +123,7 @@ rasterizer:
   path: '/tmp/'        # where the screenshot files are stored
   viewport: '1024x600' # browser window size. Height frows according to the content
 cache:
-  lifetime: 60000      # one minute, set to 0 for no cache
+  lifetime: 0          # cache time in milliseconds, 0 disables
 server:
   port: 3000           # main service port
 ```

@@ -4,7 +4,7 @@ rasterizer:
   path: '/tmp/'        # where the screenshot files are stored
   viewport: '1024x600' # browser window size. Height frows according to the content
 cache:
-  lifetime: 60000      # one minute, set to 0 for no cache
+  lifetime: 0          # cache time in milliseconds, 0 disables
 server:
   port: 3000           # main service port
   useCors: false       # enable CORS support

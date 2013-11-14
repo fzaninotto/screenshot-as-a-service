@@ -68,6 +68,8 @@ service = server.listen(port, function(request, response) {
   var page = new WebPage();
   var delay = request.headers.delay || 0;
   var readyExpression = request.headers.readyExpression;
+  var forwardCacheHeaders = request.headers.forwardCacheHeaders;
+
   try {
     page.viewportSize = {
       width: request.headers.width || defaultViewportSize.width,
@@ -88,9 +90,26 @@ service = server.listen(port, function(request, response) {
     return response.close();
   }
 
+  if (forwardCacheHeaders) {
+    var cacheHeaders = /cache-control|expires|etag|vary|pragma/i;
+    page.onResourceReceived = function(resource) {
+      if (resource.url === url && resource.status === 200) {
+        page.cacheHeaders = resource.headers.filter(function (header) {
+          return header.name.match(cacheHeaders);
+        });
+      }
+    };
+  }
+
   page.open(url, function(status) {
 
     var onReady = function () {
+      if (page.cacheHeaders) {
+        page.cacheHeaders.forEach(function (header) {
+          console.log(header.name + ':' + header.value);
+          response.setHeader(header.name, header.value);
+        });
+      }
       page.render(path);
       response.write('Success: Screenshot saved to ' + path + "\n");
       page.release();
@@ -123,5 +142,4 @@ service = server.listen(port, function(request, response) {
   });
   // must start the response now, or phantom closes the connection
   response.statusCode = 200;
-  response.write('');
 });
