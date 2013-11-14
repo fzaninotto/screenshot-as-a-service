@@ -7,7 +7,7 @@ var request = require('request');
 var availableOptions = [
   'width', 'height', 'clipRect', 'javascriptEnabled', 'loadImages',
   'localToRemoteUrlAccessEnabled', 'userAgent', 'userName', 'password',
-  'delay', 'readyExpression'
+  'delay', 'readyExpression', 'forwardCacheHeaders'
 ];
 
 module.exports = function(app, useCors) {
@@ -51,7 +51,12 @@ module.exports = function(app, useCors) {
     res.redirect('/?url=' + req.url.substring(1));
   });
 
-  // bits of logic
+  var setHeaders = function(res, headers) {
+    for (var i in headers) {
+      res.setHeader(i, headers[i]);
+    }
+  };
+
   var processImageUsingCache = function(filePath, res, url, callback) {
     if (url) {
       // asynchronous
@@ -67,14 +72,16 @@ module.exports = function(app, useCors) {
     if (url) {
       // asynchronous
       res.send('Will post screenshot to ' + url + ' when processed');
-      callRasterizer(rasterizerOptions, function(error) {
+      callRasterizer(rasterizerOptions, function(error, customHeaders) {
         if (error) return callback(error);
+        setHeaders(res, customHeaders);
         postImageToUrl(filePath, url, callback);
       });
     } else {
       // synchronous
-      callRasterizer(rasterizerOptions, function(error) {
+      callRasterizer(rasterizerOptions, function(error, customHeaders) {
         if (error) return callback(error);
+        setHeaders(res, customHeaders);
         sendImageInResponse(filePath, res, callback);
       });
     }
@@ -87,7 +94,7 @@ module.exports = function(app, useCors) {
         rasterizerService.restartService();
         return callback(new Error(body));
       }
-      callback(null);
+      callback(null, response.headers);
     });
   }
 
