@@ -65,9 +65,17 @@ GET /?url=www.google.com&userAgent=Mozilla%2F5.0+%28iPhone%3B+CPU+iPhone+OS+5_0+
 # Return a screenshot using an iPhone browser
 # (User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3)
 
-# Clipping Rectangle
+# Clipping rectangle
 GET /?url=www.google.com&clipRect=%7B"top"%3A14%2C"left"%3A3%2C"width"%3A400%2C"height"%3A300%7D
 # Return a screenshot clipped at {"top":14,"left":3,"width":400,"height":300}
+# When both 'clipRect' and 'clipSelector' are specified, 'clipRect' takes
+# precedence.
+
+# Clipping rectangle from selector
+GET /?url=www.google.com&clipSelector=#hplogo
+# Return a screenshot clipped to the element specified by 'clipSelector'.
+# When both 'clipRect' and 'clipSelector' are specified, 'clipRect' takes
+# precedence.
 
 # HTTP Authentication
 GET /?url=www.mysite.com&userName=johndoe&password=S3cr3t
