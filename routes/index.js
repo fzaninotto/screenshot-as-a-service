@@ -5,9 +5,9 @@ var path = require('path');
 var request = require('request');
 
 var availableOptions = [
-  'width', 'height', 'clipRect', 'javascriptEnabled', 'loadImages',
-  'localToRemoteUrlAccessEnabled', 'userAgent', 'userName', 'password',
-  'delay', 'readyExpression', 'forwardCacheHeaders'
+  'width', 'height', 'clipRect', 'clipSelector', 'javascriptEnabled',
+  'loadImages', 'localToRemoteUrlAccessEnabled', 'userAgent', 'userName',
+  'password', 'delay', 'readyExpression', 'forwardCacheHeaders'
 ];
 
 module.exports = function(app, useCors) {

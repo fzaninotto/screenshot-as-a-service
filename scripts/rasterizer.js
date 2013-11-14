@@ -69,15 +69,17 @@ service = server.listen(port, function(request, response) {
   var delay = request.headers.delay || 0;
   var readyExpression = request.headers.readyExpression;
   var forwardCacheHeaders = request.headers.forwardCacheHeaders;
+  var clipSelector = request.headers.clipSelector;
+  var clipRect;
+  if (request.headers.clipRect) {
+    clipRect = JSON.parse(request.headers.clipRect);
+  }
 
   try {
     page.viewportSize = {
       width: request.headers.width || defaultViewportSize.width,
       height: request.headers.height || defaultViewportSize.height
     };
-    if (request.headers.clipRect) {
-      page.clipRect = JSON.parse(request.headers.clipRect);
-    }
     for (name in pageSettings) {
       if (value = request.headers[pageSettings[name]]) {
         value = (value == 'false') ? false : ((value == 'true') ? true : value);
@@ -103,11 +105,32 @@ service = server.listen(port, function(request, response) {
 
   page.open(url, function(status) {
 
+    var getClipRectFromSelector = function(selector) {
+      return page.evaluate(function(selector) {
+          try {
+              var clipRect = document.querySelector(selector).getBoundingClientRect();
+              return {
+                  top: clipRect.top,
+                  left: clipRect.left,
+                  width: clipRect.width,
+                  height: clipRect.height
+              };
+          } catch (e) {
+              console.log("Unable to fetch bounds for element " + selector, "warning");
+          }
+      }, selector);
+    };
+
     var onReady = function () {
       if (page.cacheHeaders) {
         page.cacheHeaders.forEach(function (header) {
           response.setHeader(header.name, header.value);
         });
+      }
+      if (clipRect) {
+        page.clipRect = clipRect;
+      } else if (clipSelector) {
+        page.clipRect = getClipRectFromSelector(clipSelector);
       }
       page.render(path);
       response.write('Success: Screenshot saved to ' + path + "\n");
@@ -139,6 +162,6 @@ service = server.listen(port, function(request, response) {
       response.close();
     }
   });
-  // must start the response now, or phantom closes the connection
+
   response.statusCode = 200;
 });
