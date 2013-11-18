@@ -1,4 +1,4 @@
-var curl = require('node-curl'),
+var http = require('http'),
     path = require('path'),
     qs = require('qs'),
     Image = require('../node_modules/imagediff/node_modules/canvas/index').Image,
@@ -11,20 +11,33 @@ var getBaselineImage = function (name) {
   return image;
 };
 
-var getRasterisedImage = function (query) {
+var getRasterisedImage = function (query, callback) {
   if( Object.prototype.toString.call(query) == '[object Object]' ) {
      query = qs.stringify(query);
   }
   var image = new Image();
-  curl('http://localhost:3000/?' + query, {RAW: 1}, function(err) {
-    image.src = this.body;
+
+  var src = "";
+  http.get('http://localhost:3000/?' + query, function (res) {
+    res.setEncoding('binary');
+    res.on('data', function (chunk) {
+      src += chunk;
+    });
+    res.on('end', function () {
+      image.src = new Buffer(src, 'binary');
+
+      if (callback) {
+        callback(res);
+      }
+    });
   });
+
   return image;
 };
 
-var compareImages = function (baseline, query) {
+var compareImages = function (baseline, query, responseCallback) {
   var baseline = getBaselineImage(baseline);
-  var rasterised = getRasterisedImage(query);
+  var rasterised = getRasterisedImage(query, responseCallback);
 
   waitsFor(function () {
     return baseline.complete && rasterised.complete;
@@ -42,13 +55,13 @@ describe("screenshot-as-a-service", function () {
   });
 
   it('should render an image with default options', function () {
-    compareImages('1.png', {
+    compareImages('default.png', {
       url: 'http://localhost:3999/response1.html'
     });
   });
 
   it('should render an image with custom viewport size', function () {
-    compareImages('2.png', {
+    compareImages('viewport.png', {
       url: 'http://localhost:3999/response1.html',
       width: 400,
       height: 400
@@ -56,16 +69,31 @@ describe("screenshot-as-a-service", function () {
   });
 
   it('should render an image with javascript disabled', function () {
-    compareImages('3.png', {
+    compareImages('noscript.png', {
       url: 'http://localhost:3999/response1.html',
       javascriptEnabled: false
     });
   });
 
   it('should render an image with clipRect', function () {
-    compareImages('4.png', {
+    compareImages('cliprect.png', {
       url: 'http://localhost:3999/response1.html',
       clipRect: '{"top": 20, "left": 20, "width": 80, "height": 100 }'
+    });
+  });
+
+  it("should render an image and forward cache headers", function () {
+    compareImages('default.png', {
+      url: 'http://localhost:3999/cache_headers',
+      forwardCacheHeaders: true
+    }, function (res) {
+      var headers = res.headers;
+      expect(headers['cache-control']).toEqual('public, max-age=120');
+      expect(headers.expires).toEqual('Thu, 01 Dec 1983 20:00:00 GMT');
+      expect(headers.etag).toEqual('1234567890');
+      expect(headers.vary).toEqual('Test, Accept-Encoding');
+      expect(headers.pragma).toEqual('no-cache');
+      expect(headers['x-unrelated-header']).not.toBeDefined();
     });
   });
   

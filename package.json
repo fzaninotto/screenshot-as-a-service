@@ -13,7 +13,6 @@
   "devDependencies": {
     "imagediff": "1.0.4",
     "jasmine-node": "1.11.0",
-    "node-curl": "0.3.1",
     "qs": "0.6.5"
   }
 }
