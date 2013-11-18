@@ -9,5 +9,11 @@
     "express": "3.x",
     "config": "0.4.15",
     "request": "2.9.153"
+  },
+  "devDependencies": {
+    "imagediff": "1.0.4",
+    "jasmine-node": "1.11.0",
+    "node-curl": "0.3.1",
+    "qs": "0.6.5"
   }
 }
