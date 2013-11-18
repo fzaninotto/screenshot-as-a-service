@@ -4,18 +4,38 @@ A simple screenshot web service powered by [Express](http://expressjs.com) and [
 
 ## Setup
 
-First [install](http://code.google.com/p/phantomjs/wiki/Installation) phantomjs, then clone this repo and install the deps:
+### Production setup
 
+- [Install PhantomJS](http://phantomjs.org/download.html)
+- Install dependencies:
+```bash
+$ npm install --production
 ```
+
+### Development setup
+
+In order to run the tests, additional dependencies are required.
+
+- [Install PhantomJS](http://phantomjs.org/download.html)
+- [Install node-canvas dependencies](https://github.com/LearnBoost/node-canvas/wiki/_pages)
+- Install dependencies:
+```bash
 $ npm install
 ```
 
-Run the app:
+## Running the app
 
-```
+```bash
 $ node app
 Express server listening on port 3000
 ```
+
+## Tests
+
+```bash
+$ ./run_specs.sh
+```
+
 
 ## Usage
 
@@ -141,7 +161,7 @@ Every minute, this script will refresh the two screenshots `google.png` and `yah
 
 (The MIT License)
 
-Copyright (c) 2012 François Zaninotto, TJ Holowaychuk &lt;tj@vision-media.ca&gt;
+Copyright (c) 2012-2013 HM Government (Government Digital Service), François Zaninotto, TJ Holowaychuk &lt;tj@vision-media.ca&gt;
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
