@@ -9,7 +9,16 @@ app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.compress());
-app.use('/', express.static(path.join(__dirname, 'responses')));
+
+var sendResponse = function (res) {
+  fs.readFile(path.join(__dirname, 'response.html'), 'utf8', function (err, data) {
+    res.send(data);
+  });
+};
+
+app.use('/default', function (req, res) {
+  sendResponse(res);
+});
 app.use('/cache_headers', function (req, res) {
   res.setHeader('cache-control', 'public, max-age=120');
   res.setHeader('expires', 'Thu, 01 Dec 1983 20:00:00 GMT');
@@ -17,10 +26,7 @@ app.use('/cache_headers', function (req, res) {
   res.setHeader('vary', 'Test, Accept-Encoding');
   res.setHeader('pragma', 'no-cache');
   res.setHeader('x-unrelated-header', 'not forwarded');
-
-  fs.readFile(path.join(__dirname, 'responses', 'response1.html'), 'utf8', function (err, data) {
-    res.send(data);
-  });
+  sendResponse(res);
 });
 
 var server = http.createServer(app).listen(app.get('port'), function(){

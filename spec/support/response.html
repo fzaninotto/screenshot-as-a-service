@@ -22,5 +22,10 @@
 <body>
   <div class="rect"></div>
   <noscript><div class="rect2"></div></noscript>
+  <script type="text/javascript">
+    setTimeout(function () {
+      document.querySelector('.rect').className = 'rect2';
+    }, 1000);
+  </script>
 </body>
 </html>

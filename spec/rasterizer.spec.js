@@ -56,13 +56,13 @@ describe("screenshot-as-a-service", function () {
 
   it('should render an image with default options', function () {
     compareImages('default.png', {
-      url: 'http://localhost:3999/response1.html'
+      url: 'http://localhost:3999/default'
     });
   });
 
   it('should render an image with custom viewport size', function () {
     compareImages('viewport.png', {
-      url: 'http://localhost:3999/response1.html',
+      url: 'http://localhost:3999/default',
       width: 400,
       height: 400
     });
@@ -70,15 +70,22 @@ describe("screenshot-as-a-service", function () {
 
   it('should render an image with javascript disabled', function () {
     compareImages('noscript.png', {
-      url: 'http://localhost:3999/response1.html',
+      url: 'http://localhost:3999/default',
       javascriptEnabled: false
     });
   });
 
-  it('should render an image with clipRect', function () {
+  it('should render an image clipped to a rectangle', function () {
     compareImages('cliprect.png', {
-      url: 'http://localhost:3999/response1.html',
+      url: 'http://localhost:3999/default',
       clipRect: '{"top": 20, "left": 20, "width": 80, "height": 100 }'
+    });
+  });
+
+  it('should render an image clipped to an element dfined by a selector', function () {
+    compareImages('clipselector.png', {
+      url: 'http://localhost:3999/default',
+      clipSelector: '.rect'
     });
   });
 
@@ -94,6 +101,20 @@ describe("screenshot-as-a-service", function () {
       expect(headers.vary).toEqual('Test, Accept-Encoding');
       expect(headers.pragma).toEqual('no-cache');
       expect(headers['x-unrelated-header']).not.toBeDefined();
+    });
+  });
+
+  it("should render an image after a delay", function () {
+    compareImages('delay.png', {
+      url: 'http://localhost:3999/default',
+      delay: 1500
+    });
+  });
+
+  it("should render an image when an expression evaluates true", function () {
+    compareImages('delay.png', {
+      url: 'http://localhost:3999/default',
+      readyExpression: '!!document.querySelector(".rect2")'
     });
   });
   
