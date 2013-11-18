@@ -67,14 +67,19 @@ service = server.listen(port, function(request, response) {
   var path = basePath + (request.headers.filename || (url.replace(new RegExp('https?://'), '').replace(/\//g, '.') + '.png'));
   var page = new WebPage();
   var delay = request.headers.delay || 0;
+  var readyExpression = request.headers.readyExpression;
+  var forwardCacheHeaders = request.headers.forwardCacheHeaders;
+  var clipSelector = request.headers.clipSelector;
+  var clipRect;
+  if (request.headers.clipRect) {
+    clipRect = JSON.parse(request.headers.clipRect);
+  }
+
   try {
     page.viewportSize = {
       width: request.headers.width || defaultViewportSize.width,
       height: request.headers.height || defaultViewportSize.height
     };
-    if (request.headers.clipRect) {
-      page.clipRect = JSON.parse(request.headers.clipRect);
-    }
     for (name in pageSettings) {
       if (value = request.headers[pageSettings[name]]) {
         value = (value == 'false') ? false : ((value == 'true') ? true : value);
@@ -86,21 +91,77 @@ service = server.listen(port, function(request, response) {
     response.write('Error while parsing headers: ' + err.message);
     return response.close();
   }
+
+  if (forwardCacheHeaders) {
+    var cacheHeaders = /cache-control|expires|etag|vary|pragma/i;
+    page.onResourceReceived = function(resource) {
+      if (resource.url === url && resource.status === 200) {
+        page.cacheHeaders = resource.headers.filter(function (header) {
+          return header.name.match(cacheHeaders);
+        });
+      }
+    };
+  }
+
   page.open(url, function(status) {
+
+    var getClipRectFromSelector = function(selector) {
+      return page.evaluate(function(selector) {
+          try {
+              var clipRect = document.querySelector(selector).getBoundingClientRect();
+              return {
+                  top: clipRect.top,
+                  left: clipRect.left,
+                  width: clipRect.width,
+                  height: clipRect.height
+              };
+          } catch (e) {
+              console.log("Unable to fetch bounds for element " + selector, "warning");
+          }
+      }, selector);
+    };
+
+    var onReady = function () {
+      if (page.cacheHeaders) {
+        page.cacheHeaders.forEach(function (header) {
+          response.setHeader(header.name, header.value);
+        });
+      }
+      if (clipRect) {
+        page.clipRect = clipRect;
+      } else if (clipSelector) {
+        page.clipRect = getClipRectFromSelector(clipSelector);
+      }
+      page.render(path);
+      response.write('Success: Screenshot saved to ' + path + "\n");
+      page.release();
+      response.close();
+    };
+
+    var watchdog = 50;
+    var waitForReady = function () {
+      var isReady = page.evaluate(function (expression) {
+        return eval(expression);
+      }, readyExpression);
+      if (isReady || --watchdog <= 0) {
+        onReady();
+      } else {
+        setTimeout(waitForReady, 100);
+      }
+    };
+
     if (status == 'success') {
-      window.setTimeout(function () {
-        page.render(path);
-        response.write('Success: Screenshot saved to ' + path + "\n");
-        page.release();
-        response.close();
-      }, delay);
+      if (readyExpression) {
+        waitForReady();
+      } else {
+        window.setTimeout(onReady, delay);
+      }
     } else {
       response.write('Error: Url returned status ' + status + "\n");
       page.release();
       response.close();
     }
   });
-  // must start the response now, or phantom closes the connection
+
   response.statusCode = 200;
-  response.write('');
 });

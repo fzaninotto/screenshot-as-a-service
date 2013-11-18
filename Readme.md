@@ -45,9 +45,17 @@ GET /?url=www.google.com&userAgent=Mozilla%2F5.0+%28iPhone%3B+CPU+iPhone+OS+5_0+
 # Return a screenshot using an iPhone browser
 # (User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3)
 
-# Clipping Rectangle
+# Clipping rectangle
 GET /?url=www.google.com&clipRect=%7B"top"%3A14%2C"left"%3A3%2C"width"%3A400%2C"height"%3A300%7D
 # Return a screenshot clipped at {"top":14,"left":3,"width":400,"height":300}
+# When both 'clipRect' and 'clipSelector' are specified, 'clipRect' takes
+# precedence.
+
+# Clipping rectangle from selector
+GET /?url=www.google.com&clipSelector=#hplogo
+# Return a screenshot clipped to the element specified by 'clipSelector'.
+# When both 'clipRect' and 'clipSelector' are specified, 'clipRect' takes
+# precedence.
 
 # HTTP Authentication
 GET /?url=www.mysite.com&userName=johndoe&password=S3cr3t
@@ -64,11 +72,33 @@ GET /?url=www.google.com&delay=1000
 # Return a 1024x600 PNG screenshot of the www.google.com homepage
 # 1 second after it's loaded
 
+# Evented screenshot delay
+GET /?url=www.modernizr.com&readyExpression=$("html").hasClass("js")
+# Return a 1024x600 PNG screenshot of the www.modernizr.com homepage
+# when 'html' tag receives class 'js'. The 'readyExpression' gets evaluated
+# repeatedly in the page context, the screenshot gets taken once it evaluates
+# to true. There is a timeout of 5 seconds after which the screenshot is
+# taken regardless.
+
 # Use an HTML form to ask for a screenshot
 GET /form.html
+
+# Forwarding cache headers
+GET /?url=www.modernizr.com&forwardCacheHeaders=true
+# Return a 1024x600 PNG screenshot of the www.modernizr.com homepage
+# and set caching-related headers of the screenshot's HTTP response to match
+# those of the original page HTTP response. Headers affected are
+# 'cache-control', 'expires', 'etag', 'vary' and 'pragma'.
+# Cache header forwarding only works when a screenshot is rasterized, not
+# when the screenshot is retrieved from the internal file cached (see below).
 ```
 
-Screenshots are cached for one minute, so that frequent requests for the same screenshot don't slow the service down. You can adjust or disable caching in the project configuration (see below).
+## Internal file cache
+
+Screenshots can be cached, so that frequent requests for the same screenshot
+don't slow the service down. When a cached screenshot is served, the
+'forwardCacheHeaders' option does not work. File cache is disabled by
+default.
 
 ## Configuration
 
@@ -81,7 +111,7 @@ rasterizer:
   path: '/tmp/'        # where the screenshot files are stored
   viewport: '1024x600' # browser window size. Height frows according to the content
 cache:
-  lifetime: 60000      # one minute, set to 0 for no cache
+  lifetime: 0          # cache time in milliseconds, 0 disables
 server:
   port: 3000           # main service port
 ```
