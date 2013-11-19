@@ -117,5 +117,4 @@ describe("screenshot-as-a-service", function () {
       readyExpression: '!!document.querySelector(".rect2")'
     });
   });
-  
 });
