@@ -36,6 +36,11 @@ Express server listening on port 3000
 $ ./run_specs.sh
 ```
 
+The tests compare the output produced by the service with a number of 'baseline' images. If you make changes to the test response, you can reset the baseline images like so:
+
+```bash
+  $ SET_BASELINE=true ./run_specs.sh
+```
 
 ## Usage
 

@@ -1,21 +1,28 @@
 var http = require('http'),
     path = require('path'),
+    fs = require('fs'),
     qs = require('qs'),
     Image = require('../node_modules/imagediff/node_modules/canvas/index').Image,
     imagediff = require('imagediff');
 
 
+var setBaseline = process.env.SET_BASELINE;
+console.log(setBaseline);
+
+var getBaselineImagePath = function (name) {
+  return path.join(__dirname, 'support', 'baselines', name);
+};
+
 var getBaselineImage = function (name) {
   var image = new Image();
-  image.src = path.join(__dirname, 'support', 'baselines', name);
+  image.src = getBaselineImagePath(name);
   return image;
 };
 
-var getRasterisedImage = function (query, callback) {
+var getRasterisedBuffer = function (query, callback) {
   if( Object.prototype.toString.call(query) == '[object Object]' ) {
      query = qs.stringify(query);
   }
-  var image = new Image();
 
   var src = "";
   http.get('http://localhost:3000/?' + query, function (res) {
@@ -24,28 +31,43 @@ var getRasterisedImage = function (query, callback) {
       src += chunk;
     });
     res.on('end', function () {
-      image.src = new Buffer(src, 'binary');
-
-      if (callback) {
-        callback(res);
-      }
+      callback(src, res);
     });
   });
+};
 
+var getRasterisedImage = function (query, callback) {
+  var image = new Image();
+  getRasterisedBuffer(query, function (src, res) {
+    image.src = new Buffer(src, 'binary');
+    if (callback) {
+      callback(res);
+    }
+  });
   return image;
 };
 
-var compareImages = function (baseline, query, responseCallback) {
-  var baseline = getBaselineImage(baseline);
-  var rasterised = getRasterisedImage(query, responseCallback);
+var compareImages = function (baselineName, query, responseCallback) {
+  if (setBaseline) {
+    getRasterisedBuffer(query, function (src) {
+      fs.writeFile(getBaselineImagePath(baselineName), src, { encoding: 'binary' }, function (err) {
+        if (err) throw err;
+        console.log('Updated baseline image for ' + baselineName);
+      });
+    });
+  } else {
+    var baseline = getBaselineImage(baselineName);
+    var rasterised = getRasterisedImage(query, responseCallback);
 
-  waitsFor(function () {
-    return baseline.complete && rasterised.complete;
-  }, 'image not loaded.', 2000);
+    waitsFor(function () {
+      return baseline.complete && rasterised.complete;
+    }, 'image not loaded.', 4000);
 
-  runs(function () {
-    expect(rasterised).toImageDiffEqual(baseline);
-  });
+    runs(function () {
+      expect(rasterised).toImageDiffEqual(baseline);
+    });
+  }
+
 };
 
 describe("screenshot-as-a-service", function () {
@@ -82,7 +104,7 @@ describe("screenshot-as-a-service", function () {
     });
   });
 
-  it('should render an image clipped to an element dfined by a selector', function () {
+  it('should render an image clipped to an element defined by a selector', function () {
     compareImages('clipselector.png', {
       url: 'http://localhost:3999/default',
       clipSelector: '.rect'

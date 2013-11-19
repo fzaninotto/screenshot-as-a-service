@@ -3,6 +3,10 @@
 <head>
   <title></title>
   <style type="text/css">
+    body {
+      margin: 0;
+    }
+
     .rect {
       display: inline-block;
       width:100px;
@@ -10,6 +14,7 @@
       background:red;
       border:5px solid blue;
     }
+    
     .rect2 {
       display: inline-block;
       width:100px;
@@ -20,8 +25,7 @@
   </style>
 </head>
 <body>
-  <div class="rect"></div>
-  <noscript><div class="rect2"></div></noscript>
+  <div class="rect"></div><noscript><div class="rect2"></div></noscript>
   <script type="text/javascript">
     setTimeout(function () {
       document.querySelector('.rect').className = 'rect2';
