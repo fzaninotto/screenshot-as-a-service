@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+  <title></title>
+  <style type="text/css">
+    body {
+      margin: 0;
+    }
+
+    .rect {
+      display: inline-block;
+      width:100px;
+      height:100px;
+      background:red;
+      border:5px solid blue;
+    }
+    
+    .rect2 {
+      display: inline-block;
+      width:100px;
+      height:100px;
+      background:blue;
+      border:5px solid red;
+    }
+  </style>
+</head>
+<body>
+  <div class="rect"></div><noscript><div class="rect2"></div></noscript>
+  <script type="text/javascript">
+    setTimeout(function () {
+      document.querySelector('.rect').className = 'rect2';
+    }, 1000);
+  </script>
+</body>
+</html>
