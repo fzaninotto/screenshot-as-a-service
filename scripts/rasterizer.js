@@ -69,6 +69,7 @@ service = server.listen(port, function(request, response) {
   var delay = request.headers.delay || 0;
   var readyExpression = request.headers.readyExpression;
   var forwardCacheHeaders = request.headers.forwardCacheHeaders;
+  var retina = request.headers.retina;
   var clipSelector = request.headers.clipSelector;
   var clipRect;
   if (request.headers.clipRect) {
@@ -125,6 +126,13 @@ service = server.listen(port, function(request, response) {
       if (page.cacheHeaders) {
         page.cacheHeaders.forEach(function (header) {
           response.setHeader(header.name, header.value);
+        });
+      }
+      if (retina) {
+        page.evaluate(function () {
+            document.body.style.webkitTransform = "scale(2)";
+            document.body.style.webkitTransformOrigin = "0% 0%";
+            document.body.style.width = "50%";
         });
       }
       if (clipRect) {
