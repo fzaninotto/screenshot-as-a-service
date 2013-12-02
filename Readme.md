@@ -116,6 +116,14 @@ GET /?url=www.modernizr.com&forwardCacheHeaders=true
 # 'cache-control', 'expires', 'etag', 'vary' and 'pragma'.
 # Cache header forwarding only works when a screenshot is rasterized, not
 # when the screenshot is retrieved from the internal file cached (see below).
+
+# "Retina" resolution screenshot
+GET /?url=www.modernizr.com&retina=true
+# Scales page up by factor 2 to simulate rendering on a device with a
+# high-resolution display. The resulting screenshot will NOT increase in
+# size, e.g. it still defaults to 1024x600. Because the content is scaled,
+# the effective viewport size is half the screenshot size, e.g. 512x300 for
+# a default sized screenshot.
 ```
 
 ## Internal file cache

@@ -7,7 +7,7 @@ var request = require('request');
 var availableOptions = [
   'width', 'height', 'clipRect', 'clipSelector', 'javascriptEnabled',
   'loadImages', 'localToRemoteUrlAccessEnabled', 'userAgent', 'userName',
-  'password', 'delay', 'readyExpression', 'forwardCacheHeaders'
+  'password', 'delay', 'readyExpression', 'forwardCacheHeaders', 'retina'
 ];
 
 module.exports = function(app, useCors) {

@@ -7,7 +7,6 @@ var http = require('http'),
 
 
 var setBaseline = process.env.SET_BASELINE;
-console.log(setBaseline);
 
 var getBaselineImagePath = function (name) {
   return path.join(__dirname, 'support', 'baselines', name);
@@ -137,6 +136,13 @@ describe("screenshot-as-a-service", function () {
     compareImages('delay.png', {
       url: 'http://localhost:3999/default',
       readyExpression: '!!document.querySelector(".rect2")'
+    });
+  });
+
+  it("should render an image at retina resolution", function () {
+    compareImages('retina.png', {
+      url: 'http://localhost:3999/default',
+      retina: true
     });
   });
 });
