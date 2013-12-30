@@ -17,6 +17,11 @@ defaultViewportSize = {
   height: ~~defaultViewportSize[1] || 600
 };
 
+var defaultPaperSize = {
+  format: 'Letter',
+  orientation: 'Portrait'
+};
+
 var pageSettings = ['javascriptEnabled', 'loadImages', 'localToRemoteUrlAccessEnabled', 'userAgent', 'userName', 'password'];
 
 var server, service;
@@ -72,6 +77,14 @@ service = server.listen(port, function(request, response) {
       width: request.headers.width || defaultViewportSize.width,
       height: request.headers.height || defaultViewportSize.height
     };
+
+    if(/\.pdf$/.test(request.headers.filename)) {
+      page.paperSize = {
+        format: request.headers.pdfPaperSize || defaultPaperSize.format,
+        orientation: request.headers.pdfOrientation || defaultPaperSize.orientation
+      };
+    }
+    
     if (request.headers.clipRect) {
       page.clipRect = JSON.parse(request.headers.clipRect);
     }
