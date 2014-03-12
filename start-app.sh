@@ -3,4 +3,4 @@
 echo "Installing Node.js dependencies..."
 npm install --quiet
 
-node app.js
+exec node app.js
