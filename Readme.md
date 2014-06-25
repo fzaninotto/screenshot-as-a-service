@@ -79,7 +79,7 @@ rasterizer:
   command: phantomjs   # phantomjs executable
   port: 3001           # internal service port. No need to allow inbound or outbound access to this port
   path: '/tmp/'        # where the screenshot files are stored
-  viewport: '1024x600' # browser window size. Height frows according to the content
+  viewport: '1024x600' # browser window size. Height grows according to the content
 cache:
   lifetime: 60000      # one minute, set to 0 for no cache
 server:
