@@ -103,6 +103,13 @@ service = server.listen(port, function(request, response) {
       }
     };
   }
+  page.onResourceReceived = function(resource) {
+    if (resource.url === url && resource.status > 399) {
+      response.statusCode = resource.status;
+      response.write('Error loading page. Returned status: ' + resource.status);
+      response.close();
+    }
+  };
 
   page.open(url, function(status) {
 
