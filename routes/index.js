@@ -90,10 +90,11 @@ module.exports = function(app, useCors) {
   var callRasterizer = function(rasterizerOptions, callback) {
     request.get(rasterizerOptions, function(error, response, body) {
       if (error || response.statusCode != 200) {
-        error = error || { message: body };
+        error = error || new Error(body);
+        error.status = response ? response.statusCode : 500;
         console.log('Error while requesting the rasterizer: %s', error.message);
         rasterizerService.restartService();
-        return callback(new Error(body));
+        return callback(error);
       }
       callback(null, response.headers);
     });
