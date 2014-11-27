@@ -44,6 +44,10 @@ GET /?url=www.google.com&delay=1000
 # Return a 1024x600 PNG screenshot of the www.google.com homepage
 # 1 second after it's loaded
 
+# Resize the image (thumbnails)
+GET /?url=www.google.com&resizeWidth=200&resizeHeight=200
+# Return a 200x200 PNG thumbnail of screenshot of the www.google.com homepage
+
 # Use an HTML form to ask for a screenshot
 <a href="/form.html">GET /form.html</a>
 </pre>
