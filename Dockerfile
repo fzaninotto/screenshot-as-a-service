@@ -1,5 +1,4 @@
 FROM debian:wheezy
-MAINTAINER Casey Harford <casey.harford@weebly.com>
 
 RUN apt-get update -y \
 && apt-get install wget curl -y -q \
@@ -11,11 +10,10 @@ RUN cd ~/ && wget https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.
 && mv ~/phantomjs-1.9.7-linux-x86_64.tar.bz2 /usr/local/share/ \
 && cd /usr/local/share \
 && tar xvjf phantomjs-1.9.7-linux-x86_64.tar.bz2 \
-&& ln -sf /usr/local/share/phantomjs-1.9.7-linux-x86_64/bin/phantomjs /usr/local/share/phantomjs \
-&& ln -sf /usr/local/share/phantomjs-1.9.7-linux-x86_64/bin/phantomjs /usr/local/bin/phantomjs \
-&& ln -sf /usr/local/share/phantomjs-1.9.7-linux-x86_64/bin/phantomjs /usr/bin/phantomjs
+&& ln -sf /usr/local/share/phantomjs-1.9.7-linux-x86_64/bin/phantomjs /usr/bin/phantomjs \
+&& rm phantomjs-1.9.7-linux-x86_64.tar.bz2
 
-ADD . /app
-RUN rm -rf /app/.git && cd /app && npm install
-WORKDIR /app
-CMD ["node", "/app/app"]
+ADD . /screenshot-as-a-service
+RUN rm -rf /screenshot-as-a-service/.git && cd /screenshot-as-a-service && npm install
+WORKDIR /screenshot-as-a-service
+CMD ["node", "/screenshot-as-a-service/app"]
