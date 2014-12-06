@@ -17,6 +17,27 @@ $ node app
 Express server listening on port 3000
 ```
 
+## Setup w/Docker
+
+First [install](https://docs.docker.com/#installation-guides) docker, then clone this repo and build docker image:
+
+```
+$ docker build -t [your_username]/screenshot-as-a-service .
+```
+
+Run the app:
+
+```
+$ docker run -it -p 3000:3000 --name screenshot-as-a-service [your_username]/screenshot-as-a-service
+```
+
+Check the app logs:
+
+```
+$ docker logs screenshot-as-a-service
+Express server listening on port 3000
+```
+
 ## Usage
 
 For a quick test with the command line, type:
