@@ -86,21 +86,44 @@ service = server.listen(port, function(request, response) {
     response.write('Error while parsing headers: ' + err.message);
     return response.close();
   }
+
+  // See http://newspaint.wordpress.com/2013/04/25/getting-to-the-bottom-of-why-a-phantomjs-page-load-fails/
+  page.onResourceError = function(resourceError) {
+    page.reason = resourceError.errorString;
+    page.reason_url = resourceError.url;
+  };
+
+  var pageOpenCallbackFired = false;
   page.open(url, function(status) {
+    pageOpenCallbackFired = true;
     if (status == 'success') {
       window.setTimeout(function () {
         page.render(path);
+        response.statusCode = 200;
         response.write('Success: Screenshot saved to ' + path + "\n");
         page.release();
         response.close();
       }, delay);
     } else {
-      response.write('Error: Url returned status ' + status + "\n");
+      var message = 'PhantomJS could not open the WebPage ['+url+'] because: ' + page.reason;
+      console.log(message);
+      response.statusCode = 502;
+      response.write(message);
       page.release();
       response.close();
     }
   });
-  // must start the response now, or phantom closes the connection
-  response.statusCode = 200;
-  response.write('');
+
+  // This has been delayed a bit on purpose because once you write the http status code, 
+  // you can't change it in case of error :(
+  // So we only start writing after 500ms so that the page.open has a time window 
+  // to eventually trigger an error with the appropriate status code
+  window.setTimeout(function () {
+    // must start the response now, or phantom closes the connection
+    if ( pageOpenCallbackFired ) {
+      response.statusCode = 200;
+      response.write('');
+    }
+  },500);
+
 });
