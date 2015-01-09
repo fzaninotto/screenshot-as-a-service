@@ -6,7 +6,7 @@
  *
  * This starts an HTTP server waiting for screenshot requests
  */
-var basePath = phantom.args[0] || '/tmp/'; 
+var basePath = phantom.args[0] || '/tmp/';
 
 var port  = phantom.args[1] || 3001;
 
@@ -49,7 +49,7 @@ server = require('webserver').create();
  * All settings of the WebPage object can also be set using headers, e.g.:
  * javascriptEnabled: false
  * userAgent: Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+
- */ 
+ */
 service = server.listen(port, function(request, response) {
   if (request.url == '/healthCheck') {
     response.statusCode = 200;
@@ -66,6 +66,9 @@ service = server.listen(port, function(request, response) {
   var url = request.headers.url;
   var path = basePath + (request.headers.filename || (url.replace(new RegExp('https?://'), '').replace(/\//g, '.') + '.png'));
   var page = new WebPage();
+  page.onResourceError = function(resourceError) {
+    page.error_reason = resourceError.errorString;
+  };
   var delay = request.headers.delay || 0;
   try {
     page.viewportSize = {
@@ -95,7 +98,7 @@ service = server.listen(port, function(request, response) {
         response.close();
       }, delay);
     } else {
-      response.write('Error: Url returned status ' + status + "\n");
+      response.write('Error: Url returned status ' + status + ' - ' + page.error_reason + "\n");
       page.release();
       response.close();
     }
