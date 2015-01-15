@@ -81,6 +81,11 @@ module.exports = function(app, useCors) {
         rasterizerService.restartService();
         return callback(new Error(body));
       }
+      else if (body.indexOf('Error: ') == 0) {
+        var errmsg = body.substring(7);
+        console.log('Error while requesting the rasterizer: %s', errmsg);
+        return callback(new Error(errmsg));
+      }
       callback(null);
     });
   }
