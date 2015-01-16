@@ -3,7 +3,7 @@
   "ignoreSslErrors": true,
 
   /* Same as: --ssl-protocol=tlsv1 */
-  "sslProtocol": "tlsv1",
+  "sslProtocol": "any",
 
   /* Same as: --max-disk-cache-size=1000 */
   "maxDiskCacheSize": 1000,
