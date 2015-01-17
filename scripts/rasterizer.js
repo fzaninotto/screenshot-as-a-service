@@ -17,7 +17,7 @@ defaultViewportSize = {
   height: ~~defaultViewportSize[1] || 600
 };
 
-var pageSettings = ['javascriptEnabled', 'loadImages', 'localToRemoteUrlAccessEnabled', 'userAgent', 'userName', 'password'];
+var pageSettings = ['javascriptEnabled', 'loadImages', 'localToRemoteUrlAccessEnabled', 'userAgent', 'userName', 'password', 'waitFor', 'waitTimeout'];
 
 var server, service;
 
@@ -70,6 +70,8 @@ service = server.listen(port, function(request, response) {
     page.error_reason = resourceError.errorString;
   };
   var delay = request.headers.delay || 0;
+  var waitFor = request.headers.waitFor != null ? decodeURIComponent(request.headers.waitFor) : null;
+  var waitTimeout = request.headers.waitTimeout || 10000;
   try {
     page.viewportSize = {
       width: request.headers.width || defaultViewportSize.width,
@@ -89,14 +91,36 @@ service = server.listen(port, function(request, response) {
     response.write('Error while parsing headers: ' + err.message);
     return response.close();
   }
+  //TODO: Verbose option? 
+  //page.onConsoleMessage = function(msg) {
+  //  console.log(msg);
+  //};
   page.open(url, function(status) {
     if (status == 'success') {
-      window.setTimeout(function () {
+      var complete = function() {
         page.render(path);
         response.write('Success: Screenshot saved to ' + path + "\n");
         page.release();
         response.close();
-      }, delay);
+      };
+
+      // If a condition is specified, delay is ignored. Instead, use waitFor and waitTimeout
+      // to specify a condition and maximum amount of time for condition to evaluate to true.
+      // We pass complete twice to render a screenshot whether or not condition was fulfilled;
+      // this leaves the code open to handle the error condition differently in the future.  
+      if (waitFor != null) {
+        waitForCondition(function() {
+          return page.evaluate(function(waitFor) {
+            // Remember: This is executed in the browser instance.
+            var result = eval(waitFor);
+            return result;
+	  }, waitFor);
+        }, complete, complete, waitTimeout);
+      } else {
+        window.setTimeout(function () {
+          complete();
+        }, delay);
+      }
     } else {
       response.write('Error: Url returned status ' + status + ' - ' + page.error_reason + "\n");
       page.release();
@@ -107,3 +131,44 @@ service = server.listen(port, function(request, response) {
   response.statusCode = 200;
   response.write('');
 });
+
+
+/**
+* Wait until the test condition is true or a timeout occurs. Useful for waiting
+* on a server response or for a ui change (fadeIn, etc.) to occur.
+*
+* @param testFx javascript condition that evaluates to a boolean,
+* it can be passed in as a string (e.g.: "1 == 1" or "$('#bar').is(':visible')" or
+* as a callback function.
+* @param onReady what to do when testFx condition is fulfilled,
+* it can be passed in as a string (e.g.: "1 == 1" or "$('#bar').is(':visible')" or
+* as a callback function.
+* @param onTimeout what to do when max amount of time is reached
+* @param timeOutMillis the max amount of time to wait. If not specified, 3 sec is used.
+*
+* Adapted from here:
+* https://github.com/ariya/phantomjs/blob/master/examples/waitfor.js
+*
+*/
+function waitForCondition(testFx, onReady, onTimeout, timeOutMillis) {
+  var maxtimeOutMillis = timeOutMillis ? timeOutMillis : 3000, //< Default Max Timout is 3s
+    start = new Date().getTime(),
+    condition = false,
+    interval = setInterval(function() {
+      if ( (new Date().getTime() - start < maxtimeOutMillis) && !condition ) {
+        // If not time-out yet and condition not yet fulfilled
+        condition = (typeof(testFx) === "string" ? eval(testFx) : testFx()); //< defensive code
+      } else {
+        if(!condition) {
+          // If condition still not fulfilled (timeout but condition is 'false')
+          // console.log("'waitFor()' failed in " + (new Date().getTime() - start) + "ms.");
+          typeof(onTimeout) === "string" ? eval(onTimeout) : onTimeout(); //< Do what's next if condition is not fulfilled in time
+        } else {
+          // Condition fulfilled (timeout and/or condition is 'true')
+          // console.log("'waitFor()' succeeded in " + (new Date().getTime() - start) + "ms.");
+          typeof(onReady) === "string" ? eval(onReady) : onReady(); //< Do what it's supposed to do once the condition is fulfilled
+        }
+        clearInterval(interval); //< Stop this interval
+      }
+    }, 250); //< repeat check every 250ms
+};
