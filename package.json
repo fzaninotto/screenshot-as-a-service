@@ -7,8 +7,9 @@
     "node": ">=0.8.4"
   },
   "dependencies": {
-    "express": "3.x",
     "config": "0.4.15",
-    "request": "2.9.153"
+    "express": "3.x",
+    "request": "2.9.153",
+    "rsz": "^0.2.3"
   }
 }

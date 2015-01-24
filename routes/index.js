@@ -3,6 +3,7 @@ var join = require('path').join;
 var fs = require('fs');
 var path = require('path');
 var request = require('request');
+var rsz = require("rsz");
 
 module.exports = function(app, useCors) {
   var rasterizerService = app.settings.rasterizerService;
@@ -23,6 +24,13 @@ module.exports = function(app, useCors) {
     ['width', 'height', 'clipRect', 'javascriptEnabled', 'loadImages', 'localToRemoteUrlAccessEnabled', 'userAgent', 'userName', 'password', 'delay'].forEach(function(name) {
       if (req.param(name, false)) options.headers[name] = req.param(name);
     });
+
+    // parameters to pass the sendImage-call
+    options.sendImage = {};
+    ['resizeWidth', 'resizeHeight'].forEach(function(name) {
+      if (req.param(name, false)) options.sendImage[name] = parseInt(req.param(name));
+    });
+
 
     var filename = 'screenshot_' + utils.md5(url + JSON.stringify(options)) + '.png';
     options.headers.filename = filename;
@@ -69,7 +77,7 @@ module.exports = function(app, useCors) {
       // synchronous
       callRasterizer(rasterizerOptions, function(error) {
         if (error) return callback(error);
-        sendImageInResponse(filePath, res, callback);
+        sendImageInResponse(filePath, res, callback, rasterizerOptions);
       });
     }
   }
@@ -106,16 +114,28 @@ module.exports = function(app, useCors) {
     }));
   }
 
-  var sendImageInResponse = function(imagePath, res, callback) {
+  var sendImageInResponse = function(imagePath, res, callback, options) {
     console.log('Sending image in response');
     if (useCors) {
       res.setHeader("Access-Control-Allow-Origin", "*");
       res.setHeader("Access-Control-Expose-Headers", "Content-Type");
     }
-    res.sendfile(imagePath, function(err) {
-      fileCleanerService.addFile(imagePath);
-      callback(err);
-    });
+    var sendImage = function(){
+      res.sendfile(imagePath, function(err) {
+        fileCleanerService.addFile(imagePath);
+        callback(err);
+      });
+    }
+    var resizeScheduled = options != undefined && options.sendImage.resizeWidth != undefined && options.sendImage.resizeHeight != undefined;
+    if(resizeScheduled){
+      rsz(imagePath, options.sendImage.resizeWidth,options.sendImage.resizeHeight, function (err, buf) {
+        if (err) console.log('Error while resizing the screenshot: %s', err);
+        fs.writeFileSync(imagePath, buf)
+        sendImage(); 
+      })
+    } else {
+      sendImage();
+    }
   }
 
 };
