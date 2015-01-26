@@ -15,16 +15,18 @@ module.exports = function(app, useCors) {
     }
 
     var url = utils.url(req.param('url'));
+    var format = req.param('format') || 'png';
+    
     // required options
     var options = {
       uri: 'http://localhost:' + rasterizerService.getPort() + '/',
       headers: { url: url }
     };
-    ['width', 'height', 'clipRect', 'javascriptEnabled', 'loadImages', 'localToRemoteUrlAccessEnabled', 'userAgent', 'userName', 'password', 'delay'].forEach(function(name) {
+    ['width', 'height', 'clipRect', 'javascriptEnabled', 'loadImages', 'localToRemoteUrlAccessEnabled', 'userAgent', 'userName', 'password', 'delay', 'pdfPaperSize', 'pdfOrientation'].forEach(function(name) {
       if (req.param(name, false)) options.headers[name] = req.param(name);
     });
 
-    var filename = 'screenshot_' + utils.md5(url + JSON.stringify(options)) + '.png';
+    var filename = 'screenshot_' + utils.md5(url + JSON.stringify(options)) + '.'+format;
     options.headers.filename = filename;
 
     var filePath = join(rasterizerService.getPath(), filename);
