@@ -132,6 +132,24 @@ setInterval(poller, 60000);
 
 Every minute, this script will refresh the two screenshots `google.png` and `yahoo.png`.
 
+## Deploying to Heroku
+
+This repository can be deployed directly to [Heroku](https://www.heroku.com). It requires both Node and Phantom, so we need to use multiple buildpacks.
+
+```bash
+$ heroku create --buildpack=https://github.com/ddollar/heroku-buildpack-multi.git
+```
+
+The `$PATH` will not be correct, but we can fix that.
+```bash
+$ heroku config:set PATH=/app/bin:/app/node_modules/bin:/usr/local/bin:/usr/bin:/bin:/app/vendor/phantomjs/bin
+```
+
+Now we can deploy normally.
+```bash
+$ git push heroku master
+```
+
 ## TODO
 
 * Allow to configure phantomjs options through YAML config

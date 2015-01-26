@@ -6,6 +6,10 @@ var express = require('express');
 var RasterizerService = require('./lib/rasterizerService');
 var FileCleanerService = require('./lib/fileCleanerService');
 
+if (process.env.PORT) {
+  config.server.port = process.env.PORT;
+}
+
 process.on('uncaughtException', function (err) {
   console.error("[uncaughtException]", err);
   process.exit(1);
