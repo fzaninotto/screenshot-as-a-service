@@ -1,12 +1,14 @@
 rasterizer:
   command: phantomjs   # phantomjs executable
-  port: 3001           # internal service port. No need to allow inbound or outbound access to this port
+  options:
+  - '--ssl-protocol=tlsv1'
+  port: 6001           # internal service port. No need to allow inbound or outbound access to this port
   host: '127.0.0.1'    # host to listen on
   path: '/tmp/'        # where the screenshot files are stored
   viewport: '1024x600' # browser window size. Height frows according to the content
 cache:
   lifetime: 60000      # one minute, set to 0 for no cache
 server:
-  port: 3000           # main service port
+  port: 6000           # main service port
   host: '127.0.0.1'    # host to listen on
   useCors: false       # enable CORS support
