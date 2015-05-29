@@ -9,6 +9,7 @@
   "dependencies": {
     "express": "3.x",
     "config": "0.4.15",
-    "request": "2.9.153"
+    "request": "2.9.153",
+    "phantomjs": "^1.9.15"
   }
 }
