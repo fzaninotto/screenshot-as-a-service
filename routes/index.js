@@ -89,6 +89,8 @@ module.exports = function(app, useCors) {
 
   var callRasterizer = function(rasterizerOptions, callback) {
     request.get(rasterizerOptions, function(error, response, body) {
+      console.log("Rasterizer response:")
+      console.log(response)
       if (error || response.statusCode != 200) {
         error = error || new Error(body);
         error.status = response ? response.statusCode : 500;
