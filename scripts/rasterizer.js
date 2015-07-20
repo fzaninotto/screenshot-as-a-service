@@ -111,6 +111,10 @@ service = server.listen(port, function(request, response) {
     }
   };
 
+  page.onResourceReceived = function(response) {
+      console.log('Response (#' + response.id + ', stage "' + response.stage + '"): ' + JSON.stringify(response));
+  };
+
   page.open(url, function(status) {
 
     var getClipRectFromSelector = function(selector) {
@@ -172,6 +176,11 @@ service = server.listen(port, function(request, response) {
         window.setTimeout(onReady, delay);
       }
     } else {
+      console.log("-------------------------------");
+      console.log(status);
+      console.log(document);
+      console.log(page.content);
+      console.log("-------------------------------");
       response.write('Error: Url returned status ' + status + "\n");
       page.release();
       response.close();

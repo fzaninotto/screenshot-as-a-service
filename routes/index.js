@@ -37,11 +37,13 @@ module.exports = function(app, useCors) {
 
     var callbackUrl = req.param('callback', false) ? utils.url(req.param('callback')) : false;
 
+    console.log("FLOOOOOOOOP");
     if (fs.existsSync(filePath)) {
       console.log('Request for %s - Found in cache', url);
       processImageUsingCache(filePath, res, callbackUrl, function(err) { if (err) next(err); });
       return;
     }
+    console.log("FLOOOOOOOOP");
     console.log('Request for %s - Rasterizing it', url);
     processImageUsingRasterizer(options, filePath, res, callbackUrl, function(err) { if(err) next(err); });
   });
@@ -90,7 +92,10 @@ module.exports = function(app, useCors) {
   var callRasterizer = function(rasterizerOptions, callback) {
     request.get(rasterizerOptions, function(error, response, body) {
       console.log("Rasterizer response:")
-      console.log(response)
+      console.log(response.statusCode)
+      console.log("===============")
+      console.log(error)
+      console.log("===============")
       if (error || response.statusCode != 200) {
         error = error || new Error(body);
         error.status = response ? response.statusCode : 500;
