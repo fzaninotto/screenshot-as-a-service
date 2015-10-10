@@ -6,15 +6,39 @@ A simple screenshot web service powered by [Express](http://expressjs.com) and [
 
 First [install](http://code.google.com/p/phantomjs/wiki/Installation) phantomjs, then clone this repo and install the deps:
 
-```
+```sh
 $ npm install
 ```
 
 Run the app:
 
-```
+```sh
 $ node app
 Express server listening on port 3000
+```
+
+## Setup with Docker
+
+First [install](https://docs.docker.com/#installation-guides) docker, then clone this repo and build docker image:
+
+```sh
+$ docker build -t [your_username]/screenshot-as-a-service .
+```
+
+Run the app:
+
+```sh
+$ docker run -d -p 80:3000 [your_username]/screenshot-as-a-service
+```
+
+Then access `[your-docker-ip]/`. See usage section below.
+
+If you need to override config, run the app as such:
+
+```sh
+$ docker run -d -p 80:3000 \
+  -v /path/to/config.yml:/usr/screenshot-as-a-service/config/default.yaml \
+  [your_username]/screenshot-as-a-service
 ```
 
 ## Usage
